@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2023 Google LLC
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.google.android.mobly.snippet.uiautomator">
+
+    <uses-sdk
+        android:minSdkVersion="26"
+        android:targetSdkVersion="33"
+        tools:ignore="GradleOverrides" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME"/>
+        </intent>
+    </queries>
+
+    <application tools:ignore="MissingApplicationIcon">
+        <meta-data
+            android:name="mobly-object-converter"
+            android:value="com.google.android.mobly.snippet.uiautomator.Converter" />
+        <meta-data
+            android:name="mobly-snippets"
+            android:value="com.google.android.mobly.snippet.uiautomator.ConfiguratorSnippet,
+                           com.google.android.mobly.snippet.uiautomator.UiDeviceSnippet,
+                           com.google.android.mobly.snippet.uiautomator.UiObject2Snippet,
+                           com.google.android.mobly.snippet.uiautomator.UiWatcherSnippet" />
+    </application>
+
+    <instrumentation
+        android:name="com.google.android.mobly.snippet.SnippetRunner"
+        android:targetPackage="com.google.android.mobly.snippet.uiautomator" />
+</manifest>
