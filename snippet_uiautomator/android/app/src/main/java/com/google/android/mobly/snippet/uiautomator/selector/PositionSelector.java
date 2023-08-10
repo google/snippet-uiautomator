@@ -106,4 +106,6 @@ public final class PositionSelector {
         throw new SelectorException(String.format("Receive unexpected position<%s>", position));
     }
   }
+
+  private PositionSelector() {}
 }
