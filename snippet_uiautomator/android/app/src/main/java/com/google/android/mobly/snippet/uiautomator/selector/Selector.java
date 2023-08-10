@@ -22,8 +22,8 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 import com.google.android.mobly.snippet.uiautomator.ConfiguratorSnippet;
 import com.google.android.mobly.snippet.util.Log;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,8 +39,8 @@ import org.json.JSONObject;
  * objects are found. The behavior is the same as {@link UiDevice#findObject(BySelector)}.
  */
 public class Selector {
-  private static final ImmutableList<String> SUB_SELECTORS =
-      ImmutableList.of("child", "parent", "sibling", "bottom", "left", "right", "top");
+  private static final ImmutableSet<String> SUB_SELECTORS =
+      ImmutableSet.of("child", "parent", "sibling", "bottom", "left", "right", "top");
   private final UiDevice uiDevice = ConfiguratorSnippet.getUiDevice();
   private final ImmutableMap<String, IBySelector> bySelectorMap = BySelectorMap.create();
   private final JSONObject selector;

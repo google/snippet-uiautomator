@@ -359,5 +359,7 @@ public final class BySelectorMap {
       return Optional.ofNullable(bySelector).map(b -> b.text(pattern)).orElse(By.text(pattern));
     }
   }
+
+  private BySelectorMap() {}
 }
 
