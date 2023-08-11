@@ -65,3 +65,15 @@ ad.ui(text='OK').click()
 uiautomator.unload_uiautomator_service(ad)
 ```
 
+## API Usage
+
+- [Configurator](https://github.com/google/snippet-uiautomator/blob/main/docs/configurator.md)
+
+- [Selector](https://github.com/google/snippet-uiautomator/blob/main/docs/selector.md)
+
+- [UiDevice](https://github.com/google/snippet-uiautomator/blob/main/docs/uidevice.md)
+
+- [UiObject2](https://github.com/google/snippet-uiautomator/blob/main/docs/uiobject2.md)
+
+- [UiWatcher](https://github.com/google/snippet-uiautomator/blob/main/docs/uiwatcher.md)
+
