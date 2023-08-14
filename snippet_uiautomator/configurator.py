@@ -21,7 +21,7 @@ import dataclasses
 import datetime
 import enum
 import functools
-from typing import Optional, Sequence
+from typing import Mapping, Optional, Sequence
 
 from snippet_uiautomator import constants
 from snippet_uiautomator import utils
@@ -109,7 +109,7 @@ class Configurator:
   timeout: Timeout = Timeout()
   tool_type: Optional[ToolType] = None
 
-  def to_dict(self) -> dict[str, int]:
+  def to_dict(self) -> Mapping[str, int]:
     """Converts Configurator to the ConfiguratorInfo for the RPC."""
     config = {}
 
