@@ -75,7 +75,7 @@ public class Selector {
       JSONObject selector, @Nullable UiObject2 baseUiObject2, String type)
       throws SelectorException {
     BySelector bySelector = getBySelector(selector);
-    if (bySelector == null) {
+    if (bySelector == null && type.equals("self")) {
       return null;
     }
 
