@@ -17,6 +17,8 @@
 https://developer.android.com/reference/androidx/test/uiautomator/BySelector
 """
 
+from __future__ import annotations
+
 from typing import Mapping, Union
 
 SelectorType = Mapping[str, Union[bool, int, str]]
@@ -60,6 +62,10 @@ class BySelector:
       )
     self._bottom[name] = dict(kwargs)
     self._bottom = self._bottom[name]
+
+  def copy(self) -> BySelector:
+    """Returns a copy of this selector."""
+    return BySelector(**self._selector)
 
   def is_nested(self) -> bool:
     """Checks if this selector will be converted to a nested dictionary."""

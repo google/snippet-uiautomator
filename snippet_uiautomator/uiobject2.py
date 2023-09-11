@@ -451,41 +451,40 @@ class UiObject2:
     self._serial = self._ui._adb.serial  # pylint: disable=protected-access
     self._raise_error = raise_error
 
+  def _create_instance(self, tag: str, **kwargs) -> UiObject2:
+    """Creates a new instance of this object with the given tag."""
+    selector = self._selector.copy()
+    selector.append(tag, **kwargs)
+    return UiObject2(self._ui, selector, self._raise_error)
+
   @property
   def parent(self) -> UiObject2:
     """Finds this object's parent, or null if it has no parent."""
-    self._selector.append('parent')
-    return self
+    return self._create_instance('parent')
 
   def child(self, **kwargs) -> UiObject2:
     """Finds the child object directly under this object."""
-    self._selector.append('child', **kwargs)
-    return self
+    return self._create_instance('child', **kwargs)
 
   def sibling(self, **kwargs) -> UiObject2:
     """Finds the sibling object which has the same parent with this object."""
-    self._selector.append('sibling', **kwargs)
-    return self
+    return self._create_instance('sibling', **kwargs)
 
   def bottom(self, **kwargs) -> UiObject2:
     """Finds the closest object that is below this object."""
-    self._selector.append('bottom', **kwargs)
-    return self
+    return self._create_instance('bottom', **kwargs)
 
   def left(self, **kwargs) -> UiObject2:
     """Finds the closest object that is to the left of this object."""
-    self._selector.append('left', **kwargs)
-    return self
+    return self._create_instance('left', **kwargs)
 
   def right(self, **kwargs) -> UiObject2:
     """Finds the closest object that is to the right of this object."""
-    self._selector.append('right', **kwargs)
-    return self
+    return self._create_instance('right', **kwargs)
 
   def top(self, **kwargs) -> UiObject2:
     """Finds the closest object that is above this object."""
-    self._selector.append('top', **kwargs)
-    return self
+    return self._create_instance('top', **kwargs)
 
   def clear_text(self) -> bool:
     """Clears the text content if this object is an editable field."""
