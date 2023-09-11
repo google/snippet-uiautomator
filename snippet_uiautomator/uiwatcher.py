@@ -19,7 +19,7 @@ https://developer.android.com/reference/androidx/test/uiautomator/UiWatcher
 
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Optional
 
 from mobly.controllers.android_device_lib import snippet_client_v2
 
