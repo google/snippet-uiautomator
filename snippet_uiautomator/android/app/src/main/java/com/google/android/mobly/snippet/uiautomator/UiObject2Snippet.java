@@ -21,7 +21,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import android.graphics.Point;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
-import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.StaleObjectException;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 import com.google.android.mobly.snippet.Snippet;
@@ -45,8 +45,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * href="https://developer.android.com/reference/androidx/test/uiautomator/UiObject2">UiObject2</a>
  */
 public class UiObject2Snippet implements Snippet {
-  private final UiDevice uiDevice = ConfiguratorSnippet.getUiDevice();
-
   @Rpc(description = "Clears the text content if this object is an editable field.")
   public boolean clear(Selector selector) throws SelectorException {
     return operate(selector, UiObject2::clear);
@@ -356,12 +354,16 @@ public class UiObject2Snippet implements Snippet {
 
   @Rpc(description = "Waits for given the condition to be met.")
   public boolean waitForExists(Selector selector, long timeoutInMillis) throws SelectorException {
-    return uiDevice.wait(Until.hasObject(selector.toBySelector()), timeoutInMillis);
+    return Utils.waitUntilTrue(() -> selector.toUiObject2NoWait() != null, timeoutInMillis);
   }
 
   @Rpc(description = "Waits for given the condition to be gone.")
   public boolean waitUntilGone(Selector selector, long timeoutInMillis) throws SelectorException {
-    return uiDevice.wait(Until.gone(selector.toBySelector()), timeoutInMillis);
+    try {
+      return Utils.waitUntilTrue(() -> selector.toUiObject2NoWait() == null, timeoutInMillis);
+    } catch (StaleObjectException e) {
+      return true;
+    }
   }
 
   private static boolean getBoolean(Selector selector, Function<UiObject2, Boolean> function)
