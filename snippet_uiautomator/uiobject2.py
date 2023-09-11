@@ -460,9 +460,7 @@ class UiObject2:
   @property
   def parent(self) -> UiObject2:
     """Finds this object's parent, or null if it has no parent."""
-    selector = self._selector.copy()
-    selector.append('parent')
-    return UiObject2(self._ui, selector, self._raise_error)
+    return self._create_instance('parent')
 
   def child(self, **kwargs) -> UiObject2:
     """Finds the child object directly under this object."""
