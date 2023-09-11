@@ -7,7 +7,7 @@ APIs.
 
 ## Requirements
 
--   Python 3.6+
+-   Python 3.7+
 -   Android 8.0+ (SDK 26+)
 
 ## Installation
