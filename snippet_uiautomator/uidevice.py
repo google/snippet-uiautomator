@@ -58,7 +58,7 @@ class _Press:
     """Calls the press action via invoke."""
     if isinstance(keycode, int):
       return self._ui.pressKeyCode(keycode, meta)
-    elif isinstance(keycode, list) or isinstance(keycode, tuple):
+    elif isinstance(keycode, (list, tuple)):
       return self._ui.pressKeyCodes(keycode, meta)
     return self._press(keycode)
 
