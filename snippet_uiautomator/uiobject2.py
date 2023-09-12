@@ -317,7 +317,7 @@ class _Scroll:
       """Scrolls until the target object is visible, then clicks."""
       if not kwargs:
         raise errors.ApiError('Target to scroll to is not defined')
-      if self.__call__(**kwargs):
+      if self(**kwargs):
         return self._ui.clickObj(kwargs)
       return False
 
