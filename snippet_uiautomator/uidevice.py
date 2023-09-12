@@ -364,7 +364,9 @@ class UiDevice:
       content = xml.dom.minidom.parseString(content).toprettyxml(indent='  ')
     if file:
       with open(
-          self.log_path.joinpath(f'window_dump,{timestamp}.xml'), 'w'
+          self.log_path.joinpath(f'window_dump,{timestamp}.xml'),
+          'w',
+          encoding='utf8',
       ) as f:
         print(content, file=f)
     else:
