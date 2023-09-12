@@ -157,6 +157,7 @@ class UiAutomatorService(base_service.BaseService):
 
   @property
   def ui_device(self) -> UiDevice:
+    """Gets the UiDevice object."""
     if not self.is_alive:
       raise errors.ConfigurationError(errors.ERROR_WHEN_SERVICE_NOT_RUNNING)
     service = getattr(
