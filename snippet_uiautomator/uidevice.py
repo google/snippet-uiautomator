@@ -369,6 +369,4 @@ class UiDevice:
           encoding='utf8',
       ) as f:
         print(content, file=f)
-    else:
-      return content
-
+    return content
