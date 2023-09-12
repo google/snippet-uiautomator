@@ -100,8 +100,7 @@ class UiAutomatorService(base_service.BaseService):
       ad: android_device.AndroidDevice,
       configs: UiAutomatorConfigs,
   ) -> None:
-    self._ad = ad
-    self._configs = configs
+    super().__init__(ad, configs)
     self._service = (
         configs.snippet.custom_service_name
         or configs.snippet.ui_hidden_service_name
@@ -111,7 +110,7 @@ class UiAutomatorService(base_service.BaseService):
   @property
   def _is_apk_installed(self) -> bool:
     """Checks if the snippet apk is already installed."""
-    all_packages = self._ad.adb.shell(['pm', 'list', 'package'])
+    all_packages = self._device.adb.shell(['pm', 'list', 'package'])
     return bool(
         mobly_utils.grep(
             f'^package:{self._configs.snippet.package_name}$', all_packages
@@ -130,27 +129,27 @@ class UiAutomatorService(base_service.BaseService):
     else:
       if self._is_apk_installed:
         # In case the existing application is signed with a different key.
-        self._ad.adb.uninstall(self._configs.snippet.package_name)
-      self._ad.adb.install(['-g', self._configs.snippet.file_path])
+        self._device.adb.uninstall(self._configs.snippet.package_name)
+      self._device.adb.install(['-g', self._configs.snippet.file_path])
 
   def _load_snippet(self) -> None:
     """Starts the snippet apk with the given package name and connects."""
-    if self._ad.services.snippets.get_snippet_client(self._service) is not None:
-      self._ad.log.info(
+    if self._device.services.snippets.get_snippet_client(self._service) is not None:
+      self._device.log.info(
           'Snippet client %s has already been loaded', self._service
       )
       return
 
     if self._configs.snippet.package_name is None:
       raise errors.ConfigurationError(errors.ERROR_WHEN_PACKAGE_NAME_MISSING)
-    self._ad.load_snippet(self._service, self._configs.snippet.package_name)
+    self._device.load_snippet(self._service, self._configs.snippet.package_name)
 
   def _initial_uidevice(self) -> None:
     """Initializes the UiDevice object."""
-    snippet_client = getattr(self._ad, self._service)
+    snippet_client = getattr(self._device, self._service)
     snippet_client.setConfigurator(self._configs.configurator.to_dict())
     setattr(
-        self._ad,
+        self._device,
         self._configs.snippet.ui_public_service_name,
         UiDevice(ui=snippet_client, raise_error=self._configs.raise_error),
     )
@@ -161,13 +160,13 @@ class UiAutomatorService(base_service.BaseService):
     if not self.is_alive:
       raise errors.ConfigurationError(errors.ERROR_WHEN_SERVICE_NOT_RUNNING)
     service = getattr(
-        self._ad, self._configs.snippet.ui_public_service_name, None
+        self._device, self._configs.snippet.ui_public_service_name, None
     )
     if service is None:
       raise errors.ConfigurationError(
           errors.ERROR_WHEN_INSTANCE_MISSING.format(
               instance=self._configs.snippet.ui_public_service_name,
-              serial=self._ad.serial,
+              serial=self._device.serial,
           )
       )
     return service
@@ -175,15 +174,15 @@ class UiAutomatorService(base_service.BaseService):
   @property
   def is_alive(self) -> bool:
     return (
-        hasattr(self._ad, self._configs.snippet.ui_public_service_name)
-        and hasattr(self._ad.services, 'snippets')
-        and self._ad.services.snippets.get_snippet_client(self._service)
+        hasattr(self._device, self._configs.snippet.ui_public_service_name)
+        and hasattr(self._device.services, 'snippets')
+        and self._device.services.snippets.get_snippet_client(self._service)
         is not None
     )
 
   def start(self) -> None:
     if self.is_alive:
-      self._ad.log.debug('uiautomator service has already started')
+      self._device.log.debug('uiautomator service has already started')
     else:
       self._install_apk()
       self._load_snippet()
@@ -192,30 +191,30 @@ class UiAutomatorService(base_service.BaseService):
 
   def stop(self) -> None:
     if not self.is_alive:
-      self._ad.log.debug('uiautomator service has already stopped')
+      self._device.log.debug('uiautomator service has already stopped')
       return
 
     if not self._is_apk_installed:
-      self._ad.log.debug(
+      self._device.log.debug(
           'package %s was uninstalled before stopping the service',
           self._configs.snippet.package_name,
       )
       return
 
     try:
-      self._ad.unload_snippet(self._service)
+      self._device.unload_snippet(self._service)
     except adb.AdbError as e:
       if re.fullmatch(errors.REGEX_TCP_PORT_NOT_FOUND, e.stderr) is None:
         raise
-      self._ad.log.exception(
+      self._device.log.exception(
           'listener TCP port has already lost connection before unloading the'
           ' snippet client'
       )
 
-    if hasattr(self._ad, self._configs.snippet.ui_public_service_name):
-      delattr(self._ad, self._configs.snippet.ui_public_service_name)
+    if hasattr(self._device, self._configs.snippet.ui_public_service_name):
+      delattr(self._device, self._configs.snippet.ui_public_service_name)
     else:
-      self._ad.log.debug(
+      self._device.log.debug(
           'class UiDevice %s was deleted before stopping the service',
           self._configs.snippet.ui_public_service_name,
       )
