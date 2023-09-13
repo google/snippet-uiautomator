@@ -26,6 +26,6 @@ setuptools.setup(
     packages=['snippet_uiautomator'],
     package_data={'snippet_uiautomator': ['android/app/uiautomator.apk']},
     install_requires=['mobly'],
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     keywords='uiautomator',
 )
