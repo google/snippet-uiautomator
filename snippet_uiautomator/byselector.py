@@ -44,7 +44,7 @@ class BySelector:
     self._selector = dict(kwargs)
     self._bottom = self._selector
 
-  def _find_bottom_selector(self, d: NestedSelectorType) -> SelectorType:
+  def _find_bottom_selector(self, d: NestedSelectorType) -> NestedSelectorType:
     """Returns the bottom dict object of main selector."""
     for key in d.keys():
       if key in self.SUBSELECTOR:
