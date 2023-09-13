@@ -2,6 +2,7 @@
 
 ## 1.0.3: Fix search error when using kinship and relative position
 
+* Fix incorrect selector layer when using a serial of sub selectors
 * Fix incorrect UiObject2 being found when using waitForExists and waitUntilGone on 2 or more layers of BySelector
 * Fix Selector being overwritten when creating an instance of child UiObject2
 

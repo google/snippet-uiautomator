@@ -44,6 +44,13 @@ class BySelector:
     self._selector = dict(kwargs)
     self._bottom = self._selector
 
+  def _find_bottom_selector(self, d: NestedSelectorType) -> NestedSelectorType:
+    """Returns the bottom dict object of main selector."""
+    for key in d.keys():
+      if key in self.SUBSELECTOR:
+        return self._find_bottom_selector(d[key])
+    return d
+
   def append(self, name: str, **kwargs) -> None:
     """Adds a new selector to the bottom of main selector.
 
@@ -65,7 +72,9 @@ class BySelector:
 
   def copy(self) -> BySelector:
     """Returns a copy of this selector."""
-    return BySelector(**self._selector)
+    selector = BySelector(**self._selector)
+    selector._bottom = self._find_bottom_selector(selector._selector)  # pylint: disable=protected-access
+    return selector
 
   def is_nested(self) -> bool:
     """Checks if this selector will be converted to a nested dictionary."""
