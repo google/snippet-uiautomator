@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import dataclasses
+import datetime
 import re
 from typing import Optional
 
@@ -38,6 +39,9 @@ UIAUTOMATOR_PACKAGE_NAME = 'com.google.android.mobly.snippet.uiautomator'
 ANDROID_SERVICE_NAME = 'uiautomator'
 HIDDEN_SERVICE_NAME = '_ui'
 PUBLIC_SERVICE_NAME = 'ui'
+
+_LOGCAT_TIME_FORMAT = '%m-%d %H:%M:%S'
+_SNIPPET_LAUNCH_TIME = datetime.timedelta(seconds=10)
 
 Configurator = uiconfig.Configurator
 Flag = uiconfig.Flag
@@ -147,15 +151,35 @@ class UiAutomatorService(base_service.BaseService):
     if self._configs.snippet.package_name is None:
       raise errors.ConfigurationError(errors.ERROR_WHEN_PACKAGE_NAME_MISSING)
 
-    self._device.adb.logcat(['-c'])
+    start_time = datetime.datetime.strptime(
+        (
+            self._device.adb.shell(['date', f'+"{_LOGCAT_TIME_FORMAT}"'])
+            .decode()
+            .strip()
+        ),
+        _LOGCAT_TIME_FORMAT,
+    )
     try:
       self._device.load_snippet(
           self._service, self._configs.snippet.package_name
       )
     except snippet_errors.ServerStartProtocolError as e:
-      logcat = self._device.adb.logcat(['-d', '-s', 'AndroidRuntime:E'])
-      if re.search(errors.REGEX_SERVICE_ALREADY_REGISTERED, logcat) is None:
+      logcat = self._device.adb.logcat(
+          ['-d', '-s', 'AndroidRuntime:E']
+      ).decode()
+      runtime_errors = re.findall(
+          errors.REGEX_SERVICE_ALREADY_REGISTERED, logcat
+      )
+      if not runtime_errors:
         raise
+
+      if (
+          datetime.datetime.strptime(runtime_errors[-1], _LOGCAT_TIME_FORMAT)
+          - start_time
+          > _SNIPPET_LAUNCH_TIME
+      ):
+        raise
+
       raise errors.UiAutomationServiceAlreadyRegisteredError(
           self._device.serial, errors.ERROR_WHEN_SERVICE_ALREADY_REGISTERED
       ) from e

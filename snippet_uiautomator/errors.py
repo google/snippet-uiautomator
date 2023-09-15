@@ -33,8 +33,7 @@ ERROR_WHEN_SERVICE_ALREADY_REGISTERED = (
 ERROR_WHEN_SERVICE_NOT_RUNNING = 'Snippet UiAutomator service is not running'
 
 REGEX_SERVICE_ALREADY_REGISTERED = (
-    rb'UiAutomationService android\.accessibilityservice\.'
-    rb'IAccessibilityServiceClient\$Stub\$Proxy@[\w\d]+already registered|$'
+    r'(?P<timestamp>\d\d-\d\d \d\d:\d\d:\d\d).*UiAutomationService.*registered'
 )
 REGEX_TCP_PORT_NOT_FOUND = rb"adb: error: listener 'tcp:(\d+)' not found\n|$"
 
