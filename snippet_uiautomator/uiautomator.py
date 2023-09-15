@@ -24,6 +24,7 @@ from mobly import utils as mobly_utils
 from mobly.controllers import android_device
 from mobly.controllers.android_device_lib import adb
 from mobly.controllers.android_device_lib.services import base_service
+from mobly.snippet import errors as snippet_errors
 
 from snippet_uiautomator import configurator as uiconfig
 from snippet_uiautomator import errors
@@ -134,7 +135,10 @@ class UiAutomatorService(base_service.BaseService):
 
   def _load_snippet(self) -> None:
     """Starts the snippet apk with the given package name and connects."""
-    if self._device.services.snippets.get_snippet_client(self._service) is not None:
+    if (
+        self._device.services.snippets.get_snippet_client(self._service)
+        is not None
+    ):
       self._device.log.info(
           'Snippet client %s has already been loaded', self._service
       )
@@ -142,7 +146,19 @@ class UiAutomatorService(base_service.BaseService):
 
     if self._configs.snippet.package_name is None:
       raise errors.ConfigurationError(errors.ERROR_WHEN_PACKAGE_NAME_MISSING)
-    self._device.load_snippet(self._service, self._configs.snippet.package_name)
+
+    self._device.adb.logcat(['-c'])
+    try:
+      self._device.load_snippet(
+          self._service, self._configs.snippet.package_name
+      )
+    except snippet_errors.ServerStartProtocolError as e:
+      logcat = self._device.adb.logcat(['-d', '-s', 'AndroidRuntime:E'])
+      if re.search(errors.REGEX_SERVICE_ALREADY_REGISTERED, logcat) is None:
+        raise
+      raise errors.UiAutomationServiceAlreadyRegisteredError(
+          self._device.serial, errors.ERROR_WHEN_SERVICE_ALREADY_REGISTERED
+      ) from e
 
   def _initial_uidevice(self) -> None:
     """Initializes the UiDevice object."""
