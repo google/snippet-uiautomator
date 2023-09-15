@@ -1,0 +1,16 @@
+[project]
+name = "snippet-uiautomator"
+description = "A Python wrapper for Android UI Automator"
+authors = [{ name = "Google Inc." }]
+maintainers = [{ name = "Kolin Lu", email = "kolinlu@google.com" }]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.7"
+version = "1.0.3"
+dependencies = [
+    'mobly>=1.12.2',
+]
+
+[tool.pytest.ini_options]
+addopts = "--cov=snippet_uiautomator --cov-report html"
+pythonpath = "."

@@ -16,7 +16,7 @@ APIs.
 
 ## Installation
 
-```
+```shell
 pip install snippet-uiautomator
 ```
 
@@ -67,6 +67,27 @@ ad.ui(text='OK').click()
 
 ```python
 uiautomator.unload_uiautomator_service(ad)
+```
+
+## Test
+
+Run unit tests for Python part:
+
+```shell
+pytest
+```
+
+Run tests for Snippet part:
+
+```shell
+cd snippet_uiautomator/android
+./gradlew test
+```
+
+Run pylint:
+
+```shell
+pylint $(git ls-files '*.py')
 ```
 
 ## API Usage
