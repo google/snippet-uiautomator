@@ -1,7 +1,7 @@
 # Snippet UiAutomator
 
 [![Latest release](https://img.shields.io/github/release/google/snippet-uiautomator.svg)](https://github.com/google/snippet-uiautomator/releases/latest)
-[![APK Build Status](https://github.com/google/snippet-uiautomator/actions/workflows/app.yml/badge.svg?branch=main)](https://github.com/google/snippet-uiautomator/actions)
+[![APK Build Status](https://github.com/google/snippet-uiautomator/actions/workflows/apk.yml/badge.svg?branch=main)](https://github.com/google/snippet-uiautomator/actions)
 [![Python Build Status](https://github.com/google/snippet-uiautomator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/google/snippet-uiautomator/actions)
 
 This is the Python wrapper based on
