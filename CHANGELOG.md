@@ -1,6 +1,10 @@
 # Snippet UiAutomator Release History
 
-## 1.0.3: Fix search error when using kinship and relative position
+## 1.0.4:
+
+* Raise an error when uiautomation service has already registered
+
+## 1.0.3: Improve selector search
 
 * Add latest release version and testing result for apk and python build status
 * Fix incorrect selector layer when using a serial of sub selectors

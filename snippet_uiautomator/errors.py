@@ -26,8 +26,16 @@ ERROR_WHEN_INSTANCE_MISSING = (
 ERROR_WHEN_PACKAGE_NAME_MISSING = (
     'Need to provide package name to configuration for launching snippet'
 )
+ERROR_WHEN_SERVICE_ALREADY_REGISTERED = (
+    'UiAutomation service has been registered by another app. Please stop the'
+    ' app to release the service.'
+)
 ERROR_WHEN_SERVICE_NOT_RUNNING = 'Snippet UiAutomator service is not running'
 
+REGEX_SERVICE_ALREADY_REGISTERED = (
+    rb'UiAutomationService android\.accessibilityservice\.'
+    rb'IAccessibilityServiceClient\$Stub\$Proxy@[\w\d]+already registered|$'
+)
 REGEX_TCP_PORT_NOT_FOUND = rb"adb: error: listener 'tcp:(\d+)' not found\n|$"
 
 
@@ -52,6 +60,10 @@ class ConfigurationError(Exception):
 
 class UiAutomatorError(Exception):
   """Raised when fail to operate UiAutomator."""
+
+
+class UiAutomationServiceAlreadyRegisteredError(BaseError):
+  """Raised when UiAutomation service has already registered by other app."""
 
 
 class UiObjectSearchError(BaseError):
