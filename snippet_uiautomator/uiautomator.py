@@ -258,4 +258,3 @@ def unload_uiautomator_service(ad: android_device.AndroidDevice) -> None:
   """Stops Snippet UiAutomator service."""
   if ad.services.has_service_by_name(ANDROID_SERVICE_NAME):
     ad.services.unregister(ANDROID_SERVICE_NAME)
-
