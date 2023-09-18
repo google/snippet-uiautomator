@@ -64,9 +64,7 @@ class Snippet:
       not wrapped into other snippet apps.
   """
 
-  file_path: str = dataclasses.field(
-      default_factory=utils.get_uiautomator_apk
-  )
+  file_path: str = dataclasses.field(default_factory=utils.get_uiautomator_apk)
   package_name: str = UIAUTOMATOR_PACKAGE_NAME
   ui_public_service_name: str = PUBLIC_SERVICE_NAME
   ui_hidden_service_name: Optional[str] = None
@@ -134,7 +132,8 @@ class UiAutomatorService(base_service.BaseService):
 
   def _load_snippet(self) -> None:
     """Starts the snippet apk with the given package name and connects."""
-    if self._device.services.snippets.get_snippet_client(self._service) is not None:
+    snippet_manager = self._device.services.snippets
+    if snippet_manager.get_snippet_client(self._service) is not None:
       self._device.log.info(
           'Snippet client %s has already been loaded', self._service
       )
@@ -247,4 +246,3 @@ def unload_uiautomator_service(ad: android_device.AndroidDevice) -> None:
   """Stops Snippet UiAutomator service."""
   if ad.services.has_service_by_name(ANDROID_SERVICE_NAME):
     ad.services.unregister(ANDROID_SERVICE_NAME)
-

@@ -132,4 +132,3 @@ installed to the phone.
 ```python
 uiautomator.load_uiautomator_service(ad, skip_installing=True)
 ```
-

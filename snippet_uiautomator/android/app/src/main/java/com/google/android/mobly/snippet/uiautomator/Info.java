@@ -331,4 +331,3 @@ public final class Info {
     abstract PointInfo visibleCenter();
   }
 }
-
