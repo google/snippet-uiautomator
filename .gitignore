@@ -1,2 +1,45 @@
-/__pycache__
-test.py
+#==============================================================================#
+# This file specifies intentionally untracked files that git should ignore.
+# See: http://www.kernel.org/pub/software/scm/git/docs/gitignore.html
+#
+# This file is intentionally different from the output of `git svn show-ignore`,
+# as most of those are useless.
+#==============================================================================#
+
+#==============================================================================#
+# File extensions to be ignored anywhere in the tree.
+#==============================================================================#
+# Temp files created by most text editors.
+*~
+# Merge files created by git.
+*.orig
+# Compiled python.
+*.pyc
+*.pickle
+# vim swap files
+.*.sw?
+.sw?
+# OS X specific files.
+.DS_store
+
+#==============================================================================#
+# Files to ignore
+#==============================================================================#
+/.coverage
+
+# Directories to ignore (do not add trailing '/'s, they skip symlinks).
+#==============================================================================#
+/build
+/dist
+/.tox
+/yapf.egg-info
+
+# IDEs
+/.idea
+/.vscode/settings.json
+
+# Virtual Environment
+/.venv*/
+
+# Worktrees
+/.wt

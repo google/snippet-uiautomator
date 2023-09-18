@@ -24,11 +24,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install mobly pylint pytest
+        python -m pip install mobly pylint pytest pytest-cov
     - name: Lint with pylint
       run: |
         pylint $(git ls-files '*.py')
-    # TODO(ericth): Enables tests once ready.
-    # - name: Test with pytest
-    #   run: |
-    #     pytest
+    - name: Test with pytest
+      run: |
+         pytest
