@@ -56,4 +56,3 @@ class UiAutomatorError(Exception):
 
 class UiObjectSearchError(BaseError):
   """Raised when an object does not match the search criteria."""
-

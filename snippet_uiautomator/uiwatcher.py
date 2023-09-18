@@ -157,4 +157,3 @@ class UiWatcher:
   def remove(self) -> None:
     """Removes this Watcher from UiAutomator."""
     self._ui.removeWatcher(self.name)
-

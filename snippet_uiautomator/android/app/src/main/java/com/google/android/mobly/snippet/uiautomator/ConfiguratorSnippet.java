@@ -178,4 +178,3 @@ public class ConfiguratorSnippet implements Snippet {
     setConfigurator(defaultConfiguratorInfo);
   }
 }
-

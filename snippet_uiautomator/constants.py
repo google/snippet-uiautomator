@@ -82,4 +82,3 @@ class Orientation(enum.Enum):
   LEFT = 1
   UPSIDEDOWN = 2
   RIGHT = 3
-

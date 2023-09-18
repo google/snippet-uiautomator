@@ -115,4 +115,3 @@ public class Converter implements SnippetObjectConverter {
     return null;
   }
 }
-

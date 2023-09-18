@@ -83,4 +83,3 @@ class BySelector:
   def to_dict(self) -> NestedSelectorType:
     """Returns a selector as a dictionary."""
     return self._selector
-

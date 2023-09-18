@@ -262,4 +262,3 @@ Search all objects
 >>> ad.ui.has(text='Example')
 True
 ```
-

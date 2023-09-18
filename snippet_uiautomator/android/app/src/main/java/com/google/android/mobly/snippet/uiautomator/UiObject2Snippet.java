@@ -414,4 +414,3 @@ public class UiObject2Snippet implements Snippet {
   @Override
   public void shutdown() {}
 }
-

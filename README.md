@@ -84,10 +84,12 @@ cd snippet_uiautomator/android
 ./gradlew test
 ```
 
-Run pylint:
+Set up pre-commit hooks, this will run some automated checks during each `git`
+commit and possibly update some files that require changes:
 
 ```shell
-pylint $(git ls-files '*.py')
+pip install pre-commit
+pre-commit install
 ```
 
 ## API Usage
@@ -101,4 +103,3 @@ pylint $(git ls-files '*.py')
 - [UiObject2](https://github.com/google/snippet-uiautomator/blob/main/docs/uiobject2.md)
 
 - [UiWatcher](https://github.com/google/snippet-uiautomator/blob/main/docs/uiwatcher.md)
-

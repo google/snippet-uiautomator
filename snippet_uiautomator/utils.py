@@ -54,4 +54,3 @@ def get_uiautomator_apk() -> str:
           'android', 'app', 'uiautomator.apk'
       )
   )
-

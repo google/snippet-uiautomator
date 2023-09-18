@@ -152,4 +152,3 @@ Example Usage
 ```python
 ad.ui(text='Airplane mode').right(clazz='android.widget.Switch').click()
 ```
-

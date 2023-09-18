@@ -21,9 +21,14 @@ import pytest
 from snippet_uiautomator import utils
 
 
-@pytest.mark.parametrize('timeout,expected', [
-  (888, 888), (123.45, 123), (datetime.timedelta(seconds=3), 3000),
-])
+@pytest.mark.parametrize(
+    'timeout,expected',
+    [
+        (888, 888),
+        (123.45, 123),
+        (datetime.timedelta(seconds=3), 3000),
+    ],
+)
 def test_covert_to_millisecond_succeeds(timeout, expected):
   millisecond = utils.covert_to_millisecond(timeout)
 
@@ -43,7 +48,8 @@ def test_get_mobly_ad_log_path_succeeds(mock_mobly_utils):
 
 def test_get_uiautomator_apk_succeeds():
   expected_suffix = pathlib.Path(
-    'snippet_uiautomator', 'android', 'app', 'uiautomator.apk')
+      'snippet_uiautomator', 'android', 'app', 'uiautomator.apk'
+  )
 
   uiautomator_apk = utils.get_uiautomator_apk()
 
