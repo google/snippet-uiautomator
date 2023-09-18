@@ -15,9 +15,9 @@
 
 import datetime
 import pathlib
-import pytest
 from unittest import mock
 
+import pytest
 from snippet_uiautomator import utils
 
 
