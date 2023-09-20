@@ -25,7 +25,6 @@ from mobly.controllers import android_device
 from mobly.controllers.android_device_lib import adb
 from mobly.controllers.android_device_lib.services import base_service
 from mobly.snippet import errors as snippet_errors
-
 from snippet_uiautomator import configurator as uiconfig
 from snippet_uiautomator import errors
 from snippet_uiautomator import uidevice
@@ -149,7 +148,7 @@ class UiAutomatorService(base_service.BaseService):
           self._service, self._configs.snippet.package_name
       )
     except snippet_errors.ServerStartProtocolError as e:
-      if utils.is_service_registered(self._device, start_time):
+      if utils.is_uiautomator_service_registered(self._device, start_time):
         raise errors.UiAutomationServiceAlreadyRegisteredError(
             self._device.serial, errors.ERROR_WHEN_SERVICE_ALREADY_REGISTERED
         ) from e
