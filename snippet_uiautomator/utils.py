@@ -17,11 +17,16 @@
 import datetime
 import logging
 import pathlib
+import re
 from typing import Union
 
 from mobly import logger as mobly_logger
 from mobly import utils as mobly_utils
+from mobly.controllers import android_device
 from mobly.controllers.android_device_lib import snippet_client_v2
+from snippet_uiautomator import errors
+
+REGEX_LOGCAT_TIMESTAMP = r'\d{2}-\d{2}\s{1,2}\d{2}:\d{2}:\d{2}.\d{3}'
 
 TimeUnit = Union[float, int, datetime.timedelta]
 
@@ -31,6 +36,13 @@ def covert_to_millisecond(timeout: TimeUnit) -> int:
   if isinstance(timeout, datetime.timedelta):
     return int(timeout.total_seconds() * 1_000)
   return int(timeout)
+
+
+def get_latest_logcat_timestamp(ad: android_device.AndroidDevice) -> str:
+  """Gets the latest timestamp from logcat."""
+  logcat = ad.adb.logcat(['-d']).decode()
+  last_line = logcat.splitlines()[-1]
+  return re.findall(REGEX_LOGCAT_TIMESTAMP, last_line)[-1]
 
 
 def get_mobly_ad_log_path(
@@ -54,3 +66,25 @@ def get_uiautomator_apk() -> str:
           'android', 'app', 'uiautomator.apk'
       )
   )
+
+
+def is_uiautomator_service_registered(
+    ad: android_device.AndroidDevice, start_time: str
+) -> bool:
+  """Returns Ture if uiautomation service has registered, False otherwise.
+
+  Args:
+    ad: Mobly Android device controller.
+    start_time: A timestamp that conforms to the REGEX_LOGCAT_TIMESTAMP format
+      will only check the log after this time point.
+  """
+  logcat = ad.adb.logcat(['-d', '-s', 'AndroidRuntime:E']).decode()
+  runtime_errors = re.findall(
+      f'({REGEX_LOGCAT_TIMESTAMP}){errors.REGEX_UIA_SERVICE_ALREADY_REGISTERED}',
+      logcat,
+  )
+  if not runtime_errors:
+    return False
+
+  error_time = runtime_errors[-1]
+  return mobly_logger.logline_timestamp_comparator(error_time, start_time) > -1

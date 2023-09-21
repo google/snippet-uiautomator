@@ -35,6 +35,17 @@ def test_covert_to_millisecond_succeeds(timeout, expected):
   assert millisecond == expected
 
 
+def test_get_latest_logcat_timestamp_succeeds():
+  mock_ad = mock.Mock()
+  mock_ad.adb.logcat.return_value = (
+      b'09-19 04:02:11.326 30775 30775 I logbuffer_pcie0: [2224165] L0(0x11)'
+  )
+
+  timestamp = utils.get_latest_logcat_timestamp(mock_ad)
+
+  assert timestamp == '09-19 04:02:11.326'
+
+
 @mock.patch.object(utils, 'mobly_utils')
 def test_get_mobly_ad_log_path_succeeds(mock_mobly_utils):
   mock_mobly_utils.abs_path.return_value = str(pathlib.Path('mock', 'path'))
@@ -54,3 +65,45 @@ def test_get_uiautomator_apk_succeeds():
   uiautomator_apk = utils.get_uiautomator_apk()
 
   assert uiautomator_apk.endswith(str(expected_suffix))
+
+
+def test_is_uiautomator_service_registered_when_not_registered():
+  start_time = '09-19 04:02:11.326'
+  mock_ad = mock.Mock()
+  mock_ad.adb.logcat.return_value = (
+      b'09-19 04:02:11.326 30775 30775 I logbuffer_pcie0: [2224165] L0(0x11)'
+  )
+
+  is_registered = utils.is_uiautomator_service_registered(mock_ad, start_time)
+
+  assert not is_registered
+
+
+def test_is_uiautomator_service_registered_when_registered():
+  start_time = '09-20 17:17:19.549'
+  mock_ad = mock.Mock()
+  mock_ad.adb.logcat.return_value = (
+      b'09-20 17:17:19.550 20159 20159 E AndroidRuntime: Caused by:'
+      b' java.lang.IllegalStateException: UiAutomationService'
+      b' android.accessibilityservice.IAccessibilityServiceClient$Stub$Proxy@fabaa34already'
+      b' registered!\n'
+  )
+
+  is_registered = utils.is_uiautomator_service_registered(mock_ad, start_time)
+
+  assert is_registered
+
+
+def test_is_uiautomator_service_registered_when_found_old_registered_error():
+  start_time = '09-20 17:17:19.551'
+  mock_ad = mock.Mock()
+  mock_ad.adb.logcat.return_value = (
+      b'09-20 17:17:19.550 20159 20159 E AndroidRuntime: Caused by:'
+      b' java.lang.IllegalStateException: UiAutomationService'
+      b' android.accessibilityservice.IAccessibilityServiceClient$Stub$Proxy@fabaa34already'
+      b' registered!\n'
+  )
+
+  is_registered = utils.is_uiautomator_service_registered(mock_ad, start_time)
+
+  assert not is_registered
