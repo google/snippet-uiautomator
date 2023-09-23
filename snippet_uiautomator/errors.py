@@ -32,7 +32,7 @@ ERROR_WHEN_SERVICE_ALREADY_REGISTERED = (
 )
 ERROR_WHEN_SERVICE_NOT_RUNNING = 'Snippet UiAutomator service is not running'
 
-REGEX_UIA_SERVICE_ALREADY_REGISTERED = rb'.*UiAutomationService.*registered'
+REGEX_UIA_SERVICE_ALREADY_REGISTERED = r'.*UiAutomationService.*registered'
 REGEX_TCP_PORT_NOT_FOUND = rb"adb: error: listener 'tcp:(\d+)' not found\n|$"
 
 
