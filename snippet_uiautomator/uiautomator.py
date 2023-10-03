@@ -229,6 +229,22 @@ class UiAutomatorService(base_service.BaseService):
           self._configs.snippet.ui_public_service_name,
       )
 
+  def pause(self):
+    if self.is_alive:
+      client = self._device.services.snippets.get_snippet_client(self._service)
+      client.close_connection()
+      self._device.log.debug('uiautomator service is paused')
+    else:
+      self._device.log.debug('uiautomator service has already paused')
+
+  def resume(self):
+    if self.is_alive:
+      self._device.log.debug('uiautomator service has already resumed')
+    else:
+      client = self._device.services.snippets.get_snippet_client(self._service)
+      client.restore_server_connection()
+      self._device.log.debug('uiautomator service is resumed')
+
 
 def load_uiautomator_service(
     ad: android_device.AndroidDevice,
