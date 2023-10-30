@@ -310,22 +310,48 @@ public class UiObject2Snippet implements Snippet {
   }
 
   @Rpc(description = "Scrolls to the end of a scrollable layout element.")
-  public boolean scrollUntilFinished(Selector selector, String directionStr)
+  public boolean scrollUntilFinished(
+      Selector selector,
+      String directionStr,
+      @RpcOptional Integer margin,
+      @RpcOptional Double percent)
       throws SelectorException {
     Direction direction = Direction.valueOf(directionStr);
-    return getBoolean(
-        selector, uiObject2 -> uiObject2.scrollUntil(direction, Until.scrollFinished(direction)));
+    UiObject2 uiObject2 = selector.toUiObject2();
+    if (uiObject2 == null) {
+      return false;
+    }
+    if (margin != null) {
+      uiObject2.setGestureMargin(margin);
+    } else if (percent != null) {
+      uiObject2.setGestureMarginPercent(percent.floatValue());
+    }
+    try {
+      return uiObject2.scrollUntil(direction, Until.scrollFinished(direction));
+    } finally {
+      uiObject2.recycle();
+    }
   }
 
   @Rpc(
       description =
           "Performs a scroll forward action to move through the scrollable layout element until a"
               + " visible item that matches the selector is found.")
-  public boolean scrollUntil(Selector selector, Selector childSelector, String directionStr)
+  public boolean scrollUntil(
+      Selector selector,
+      Selector childSelector,
+      String directionStr,
+      @RpcOptional Integer margin,
+      @RpcOptional Double percent)
       throws SelectorException {
     UiObject2 uiObject2 = selector.toUiObject2();
     if (uiObject2 == null) {
       return false;
+    }
+    if (margin != null) {
+      uiObject2.setGestureMargin(margin);
+    } else if (percent != null) {
+      uiObject2.setGestureMarginPercent(percent.floatValue());
     }
     BySelector childBySelector = childSelector.toBySelector();
     Direction direction = Direction.valueOf(directionStr);
