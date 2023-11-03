@@ -22,7 +22,6 @@ from __future__ import annotations
 from typing import Mapping, Optional, Sequence, Union
 
 from mobly.controllers.android_device_lib import snippet_client_v2
-
 from snippet_uiautomator import byselector
 from snippet_uiautomator import constants
 from snippet_uiautomator import errors
@@ -271,10 +270,14 @@ class _Scroll:
         ui: snippet_client_v2.SnippetClientV2,
         selector: byselector.BySelector,
         direction: str,
+        margin: Optional[int],
+        percent: Optional[float],
     ) -> None:
       self._ui = ui
       self._selector = selector
       self._direction = direction
+      self._margin = margin
+      self._percent = percent
 
     def __call__(
         self,
@@ -299,10 +302,17 @@ class _Scroll:
       if percent is None and speed is None:
         if kwargs:
           return self._ui.scrollUntil(
-              self._selector.to_dict(), kwargs, self._direction
+              self._selector.to_dict(),
+              kwargs,
+              self._direction,
+              self._margin,
+              self._percent,
           )
         return self._ui.scrollUntilFinished(
-            self._selector.to_dict(), self._direction
+            self._selector.to_dict(),
+            self._direction,
+            self._margin,
+            self._percent,
         )
       elif percent is not None and not kwargs:
         return self._ui.scroll(
@@ -328,26 +338,46 @@ class _Scroll:
   ) -> None:
     self._ui = ui
     self._selector = selector
+    self._margin = None
+    self._percent = None
+
+  def __call__(
+      self, margin: Optional[int] = None, percent: Optional[float] = None
+  ) -> _Scroll:
+    """Sets the margins used for scroll gesture."""
+    if margin is not None and percent is not None:
+      raise errors.ApiError(
+          'Pixel-based and percentage-based margin cannot be mixed'
+      )
+    self._margin = margin
+    self._percent = percent
+    return self
 
   @property
   def down(self) -> _Scroll._To:
     """Performs a scroll gesture on this object with direction DOWN."""
-    return self._To(self._ui, self._selector, 'DOWN')
+    return self._To(
+        self._ui, self._selector, 'DOWN', self._margin, self._percent
+    )
 
   @property
   def left(self) -> _Scroll._To:
     """Performs a scroll gesture on this object with direction LEFT."""
-    return self._To(self._ui, self._selector, 'LEFT')
+    return self._To(
+        self._ui, self._selector, 'LEFT', self._margin, self._percent
+    )
 
   @property
   def right(self) -> _Scroll._To:
     """Performs a scroll gesture on this object with direction RIGHT."""
-    return self._To(self._ui, self._selector, 'RIGHT')
+    return self._To(
+        self._ui, self._selector, 'RIGHT', self._margin, self._percent
+    )
 
   @property
   def up(self) -> _Scroll._To:
     """Performs a scroll gesture on this object with direction UP."""
-    return self._To(self._ui, self._selector, 'UP')
+    return self._To(self._ui, self._selector, 'UP', self._margin, self._percent)
 
 
 class _Wait:
