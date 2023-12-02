@@ -16,12 +16,12 @@
 
 package com.google.android.mobly.snippet.uiautomator;
 
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.Configurator;
-import androidx.test.uiautomator.UiDevice;
+
 import com.google.android.mobly.snippet.Snippet;
 import com.google.android.mobly.snippet.rpc.Rpc;
 import com.google.android.mobly.snippet.uiautomator.Info.ConfiguratorInfo;
+
 import org.json.JSONException;
 
 /**
@@ -31,14 +31,8 @@ import org.json.JSONException;
  * href="https://developer.android.com/reference/androidx/test/uiautomator/Configurator">Configurator</a>
  */
 public class ConfiguratorSnippet implements Snippet {
-  private static final UiDevice uiDevice =
-      UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
   private final Configurator configurator = Configurator.getInstance();
   private final ConfiguratorInfo defaultConfiguratorInfo = getConfigurator();
-
-  public static UiDevice getUiDevice() {
-    return uiDevice;
-  }
 
   @Rpc(description = "Gets all properties of Configurator.")
   public ConfiguratorInfo getConfigurator() {

@@ -279,6 +279,10 @@ class UiDevice:
     """Returns if there is a match for the given criteria."""
     return self._ui.hasObject(byselector.BySelector(**kwargs).to_dict())
 
+  def clear_cache(self) -> bool:
+    """Clears the accessibility cache, applicable to sdk 34 or higher."""
+    return self._ui.clearCache()
+
   def click(self, x: int, y: int) -> bool:
     """Performs a click at arbitrary coordinates specified by the user.
 

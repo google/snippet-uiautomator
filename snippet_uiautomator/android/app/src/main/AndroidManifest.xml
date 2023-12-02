@@ -38,6 +38,7 @@
         <meta-data
             android:name="mobly-snippets"
             android:value="com.google.android.mobly.snippet.uiautomator.ConfiguratorSnippet,
+                           com.google.android.mobly.snippet.uiautomator.UiAutomationSnippet,
                            com.google.android.mobly.snippet.uiautomator.UiDeviceSnippet,
                            com.google.android.mobly.snippet.uiautomator.UiObject2Snippet,
                            com.google.android.mobly.snippet.uiautomator.UiWatcherSnippet" />

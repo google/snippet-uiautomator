@@ -20,7 +20,7 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
-import com.google.android.mobly.snippet.uiautomator.ConfiguratorSnippet;
+import com.google.android.mobly.snippet.uiautomator.UiAutomator;
 import com.google.android.mobly.snippet.util.Log;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -41,7 +41,7 @@ import org.json.JSONObject;
 public class Selector {
   private static final ImmutableSet<String> SUB_SELECTORS =
       ImmutableSet.of("child", "parent", "sibling", "bottom", "left", "right", "top");
-  private final UiDevice uiDevice = ConfiguratorSnippet.getUiDevice();
+  private final UiDevice uiDevice = UiAutomator.getUiDevice();
   private final ImmutableMap<String, IBySelector> bySelectorMap = BySelectorMap.create();
   private final JSONObject selector;
 
