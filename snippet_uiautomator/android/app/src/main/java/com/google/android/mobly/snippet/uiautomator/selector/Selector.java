@@ -92,7 +92,14 @@ public class Selector {
         if (parentUiObject2 == null) {
           return null;
         }
-        uiObject2List = parentUiObject2.findObjects(bySelector);
+        List<UiObject2> childUiObject2List = parentUiObject2.getChildren();
+        for (UiObject2 matchedUiObject2 : parentUiObject2.findObjects(bySelector)) {
+          for (UiObject2 childUiObject2 : childUiObject2List) {
+            if (childUiObject2.equals(matchedUiObject2) && !childUiObject2.equals(baseUiObject2)) {
+              uiObject2List.add(childUiObject2);
+            }
+          }
+        }
         break;
       case "bottom":
       case "left":
