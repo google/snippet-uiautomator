@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,14 +94,12 @@ public class Selector {
         if (parentUiObject2 == null) {
           return null;
         }
-        List<UiObject2> childUiObject2List = parentUiObject2.getChildren();
-        for (UiObject2 matchedUiObject2 : parentUiObject2.findObjects(bySelector)) {
-          for (UiObject2 childUiObject2 : childUiObject2List) {
-            if (childUiObject2.equals(matchedUiObject2) && !childUiObject2.equals(baseUiObject2)) {
-              uiObject2List.add(childUiObject2);
-            }
-          }
-        }
+        List<UiObject2> childrenDirectlyUnderParent = parentUiObject2.getChildren();
+        uiObject2List =
+            parentUiObject2.findObjects(bySelector).stream()
+                .filter(childUiObject2 -> !childUiObject2.equals(baseUiObject2))
+                .filter(childrenDirectlyUnderParent::contains)
+                .collect(Collectors.toList());
         break;
       case "bottom":
       case "left":
