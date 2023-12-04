@@ -33,7 +33,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * href="https://developer.android.com/reference/androidx/test/uiautomator/UiWatcher">UiWatcher</a>
  */
 public class UiWatcherSnippet implements Snippet {
-  private final UiDevice uiDevice = ConfiguratorSnippet.getUiDevice();
+  private final UiDevice uiDevice = UiAutomator.getUiDevice();
   private final ArrayList<String> watchers = new ArrayList<>();
 
   @Rpc(description = "Checks if any registered UiWatcher have triggered.")

@@ -22,14 +22,14 @@ import android.graphics.Rect;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
-import com.google.android.mobly.snippet.uiautomator.ConfiguratorSnippet;
+import com.google.android.mobly.snippet.uiautomator.UiAutomator;
 import com.google.common.collect.ImmutableList;
 import java.util.Comparator;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /** Finds the target UiObject2 by its relative position to the original UiObject2. */
 public final class PositionSelector {
-  private static final UiDevice uiDevice = ConfiguratorSnippet.getUiDevice();
+  private static final UiDevice uiDevice = UiAutomator.getUiDevice();
 
   private static boolean isHorizontal(Rect rectA, Rect rectB) {
     return rectA.bottom >= rectB.top && rectB.bottom >= rectA.top;

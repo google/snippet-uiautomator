@@ -44,7 +44,7 @@ import org.json.JSONException;
  * href="https://developer.android.com/reference/androidx/test/uiautomator/UiDevice">UiDevice</a>
  */
 public class UiDeviceSnippet implements Snippet {
-  private final UiDevice uiDevice = ConfiguratorSnippet.getUiDevice();
+  private final UiDevice uiDevice = UiAutomator.getUiDevice();
 
   @Rpc(description = "Performs a click at arbitrary coordinates specified by the user.")
   public boolean click(int x, int y) {
