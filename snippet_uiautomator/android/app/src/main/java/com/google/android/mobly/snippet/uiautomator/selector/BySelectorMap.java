@@ -48,6 +48,7 @@ public final class BySelectorMap {
         .put("descMatches", new DescMatches())
         .put("description", new Desc())
         .put("descriptionContains", new DescContains())
+        .put("descriptionEndsWith", new DescEndsWith())
         .put("descriptionStartsWith", new DescStartsWith())
         .put("descriptionMatches", new DescMatches())
         .put("displayId", new DisplayId())

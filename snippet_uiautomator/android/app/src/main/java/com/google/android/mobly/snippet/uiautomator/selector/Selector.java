@@ -16,6 +16,8 @@
 
 package com.google.android.mobly.snippet.uiautomator.selector;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,7 +95,12 @@ public class Selector {
         if (parentUiObject2 == null) {
           return null;
         }
-        uiObject2List = parentUiObject2.findObjects(bySelector);
+        List<UiObject2> childrenDirectlyUnderParent = parentUiObject2.getChildren();
+        uiObject2List =
+            parentUiObject2.findObjects(bySelector).stream()
+                .filter(childUiObject2 -> !childUiObject2.equals(baseUiObject2))
+                .filter(childrenDirectlyUnderParent::contains)
+                .collect(toImmutableList());
         break;
       case "bottom":
       case "left":
