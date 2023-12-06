@@ -2,6 +2,12 @@
 
 ## 1.0.4:
 
+* Handle NullPointerException throw from Until#scrollUntilFinished
+* Fix sibling find the grandchildren object
+* Implement UiAutomation.clearCache API
+* Support updating gesture margin when scrolling
+* Implement pause and resume in service
+* Parse byte string before decoding to string
 * Raise an error when uiautomation service has already registered
 
 ## 1.0.3: Improve selector search
