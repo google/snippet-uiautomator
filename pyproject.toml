@@ -6,7 +6,7 @@ maintainers = [{ name = "Kolin Lu", email = "kolinlu@google.com" }]
 license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.7"
-version = "1.0.3"
+version = "1.0.4"
 dependencies = [
     'mobly>=1.12.2',
 ]
