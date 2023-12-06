@@ -93,8 +93,8 @@ class UiWatcher:
         triggered, the object that triggers the watch condition will be clicked.
         If there is search criteria, the matching object will be clicked.
     """
-    action_dict = byselector.BySelector(**kwargs).to_dict() if kwargs else None
-    self._ui.registerWatcher(self.name, self._condition.to_dict(), action_dict)
+    action = byselector.BySelector(**kwargs).to_dict() if kwargs else None
+    self._ui.registerWatcher(self.name, self._condition.to_dict(), True, action)
 
   def press(self, *args: int) -> None:
     """Presses KeyEvents in sequence when this watcher is triggered.
@@ -153,6 +153,15 @@ class UiWatcher:
     """
     self._condition = byselector.BySelector(**kwargs)
     return self
+
+  def watch(self, **kwargs) -> None:
+    """Watches for the specific condition to become True for this watcher.
+
+    Args:
+      **kwargs: The search criteria for matching objects.
+    """
+    self._condition = byselector.BySelector(**kwargs)
+    self._ui.registerWatcher(self.name, self._condition.to_dict(), False, None)
 
   def remove(self) -> None:
     """Removes this Watcher from UiAutomator."""

@@ -52,13 +52,17 @@ public class UiWatcherSnippet implements Snippet {
   }
 
   @Rpc(description = "Registers a UiWatcher to run automatically when expected condition happened.")
-  public void registerWatcher(String name, Selector condition, @Nullable Selector action) {
+  public void registerWatcher(
+      String name, Selector condition, boolean takeActionAfterTrigger, @Nullable Selector action) {
     uiDevice.registerWatcher(
         name,
         () -> {
           Optional<UiObject2> conditionUiObject2 =
               Optional.ofNullable(condition.toUiObject2NoWait());
           if (conditionUiObject2.isPresent()) {
+            if (!takeActionAfterTrigger) {
+              return true;
+            }
             if (action == null) {
               conditionUiObject2.get().click();
               return true;
