@@ -84,10 +84,10 @@ class UiAutomatorConfigs:
       APIs. Set to True to raise an error instead of returning a False value.
   """
 
-  snippet: Snippet
-  configurator: Configurator
-  skip_installing: bool
-  raise_error: bool
+  snippet: Optional[Snippet] = None
+  configurator: Optional[Configurator] = None
+  skip_installing: bool = False
+  raise_error: bool = False
 
 
 class UiAutomatorService(base_service.BaseService):
@@ -96,14 +96,20 @@ class UiAutomatorService(base_service.BaseService):
   def __init__(
       self,
       ad: android_device.AndroidDevice,
-      configs: UiAutomatorConfigs,
+      configs: Optional[UiAutomatorConfigs] = None,
   ) -> None:
-    super().__init__(ad, configs)
+    if configs is None:
+      configs = UiAutomatorConfigs()
+    if configs.snippet is None:
+      configs.snippet = Snippet()
+    if configs.configurator is None:
+      configs.configurator = Configurator()
     self._service = (
         configs.snippet.custom_service_name
         or configs.snippet.ui_hidden_service_name
         or HIDDEN_SERVICE_NAME
     )
+    super().__init__(ad, configs)
 
   @property
   def _is_apk_installed(self) -> bool:
@@ -246,6 +252,8 @@ class UiAutomatorService(base_service.BaseService):
       self._device.log.debug('uiautomator service is resumed')
 
 
+# TODO: This method is going to deprecate, please follow Mobly Android service
+# to start service.
 def load_uiautomator_service(
     ad: android_device.AndroidDevice,
     snippet: Optional[Snippet] = None,
@@ -254,6 +262,12 @@ def load_uiautomator_service(
     raise_error: bool = False,
 ) -> None:
   """Loads Snippet UiAutomator as a Mobly AndroidDevice service."""
+  ad.log.warning(
+      'Please stop using `uiautomator.load_uiautomator_service`, follow'
+      ' standard service registration instead. e.g.'
+      " `ad.services.register('uiautomator', uiautomator.UiAutomatorService)`"
+  )
+
   if ad.services.has_service_by_name(ANDROID_SERVICE_NAME):
     ad.services.unregister(ANDROID_SERVICE_NAME)
 
@@ -269,7 +283,14 @@ def load_uiautomator_service(
   )
 
 
+# TODO: This method is going to deprecate, please follow Mobly Android service
+# to stop service.
 def unload_uiautomator_service(ad: android_device.AndroidDevice) -> None:
   """Stops Snippet UiAutomator service."""
+  ad.log.warning(
+      'Please stop using `uiautomator.unload_uiautomator_service`, follow'
+      ' standard service registration instead.'
+  )
+
   if ad.services.has_service_by_name(ANDROID_SERVICE_NAME):
     ad.services.unregister(ANDROID_SERVICE_NAME)
