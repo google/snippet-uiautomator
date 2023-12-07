@@ -58,7 +58,9 @@ Snippet UiAutomator supports launching as one of
 ```python
 from snippet_uiautomator import uiautomator
 
-ad.services.register('uiautomator', uiautomator.UiAutomatorService)
+ad.services.register(
+    uiautomator.ANDROID_SERVICE_NAME, uiautomator.UiAutomatorService
+)
 
 ad.ui(text='OK').click()
 ```
