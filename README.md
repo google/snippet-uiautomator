@@ -58,15 +58,9 @@ Snippet UiAutomator supports launching as one of
 ```python
 from snippet_uiautomator import uiautomator
 
-uiautomator.load_uiautomator_service(ad)
+ad.services.register('uiautomator', uiautomator.UiAutomatorService)
 
 ad.ui(text='OK').click()
-```
-
-**Tip:** To safely shut down the service, e.g. before factory reset, use:
-
-```python
-uiautomator.unload_uiautomator_service(ad)
 ```
 
 ## Test

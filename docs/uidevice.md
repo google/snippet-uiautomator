@@ -4,6 +4,17 @@ This doc is showing how Snippet UiAutomator implement the
 [UiDevice](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice)
 to control the Android device.
 
+## UiAutomation API
+
+### Clear Cache
+
+Clear the accessibility cache for SDK 34 (Android 14) or above.
+
+```python
+>>> ad.ui.clear_cache()
+True
+```
+
 ## Device Information
 
 ```python
