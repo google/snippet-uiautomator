@@ -32,7 +32,10 @@ ad.ui.watcher('OTHER').when(text='Something Pop Up').click(text='Click Me')
 ad.ui.watcher('KEYCODE').when(text='Something Pop Up').press(uiautomator.KeyEvent.KEYCODE_HOME)
 
 # Press BACK key then HOME key
-ad.ui.watcher('KEYCODES').when(text='Something Pop Up').press(uiautomator.KeyEvent.KEYCODE_BACK, uiautomator.KeyEvent.KEYCODE_HOME)
+ad.ui.watcher('KEYCODES').when(text='Something Pop Up').press(
+    uiautomator.KeyEvent.KEYCODE_BACK,
+    uiautomator.KeyEvent.KEYCODE_HOME,
+)
 ```
 
 #### Swipe the object that matches condition

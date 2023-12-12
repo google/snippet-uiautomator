@@ -160,7 +160,10 @@ Or use
 True
 
 # Press BACK then HOME
->>> ad.ui.press([uiautomator.KeyEvent.KEYCODE_BACK, uiautomator.KeyEvent.KEYCODE_HOME])
+>>> ad.ui.press([
+        uiautomator.KeyEvent.KEYCODE_BACK,
+        uiautomator.KeyEvent.KEYCODE_HOME,
+    ])
 True
 ```
 
