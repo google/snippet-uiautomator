@@ -329,7 +329,7 @@ public class UiObject2Snippet implements Snippet {
     if (margin != null) {
       uiObject2.setGestureMargin(margin);
     } else if (percent != null) {
-      uiObject2.setGestureMarginPercent(percent.floatValue());
+      uiObject2.setGestureMarginPercentage(percent.floatValue());
     }
     try {
       return uiObject2.scrollUntil(direction, Until.scrollFinished(direction));
@@ -359,7 +359,7 @@ public class UiObject2Snippet implements Snippet {
     if (margin != null) {
       uiObject2.setGestureMargin(margin);
     } else if (percent != null) {
-      uiObject2.setGestureMarginPercent(percent.floatValue());
+      uiObject2.setGestureMarginPercentage(percent.floatValue());
     }
     BySelector childBySelector = childSelector.toBySelector();
     Direction direction = Direction.valueOf(directionStr);
