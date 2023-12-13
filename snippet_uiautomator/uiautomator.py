@@ -26,6 +26,7 @@ from mobly.controllers.android_device_lib import adb
 from mobly.controllers.android_device_lib.services import base_service
 from mobly.snippet import errors as snippet_errors
 from snippet_uiautomator import configurator as uiconfig
+from snippet_uiautomator import constants
 from snippet_uiautomator import errors
 from snippet_uiautomator import uidevice
 from snippet_uiautomator import uiobject2
@@ -40,6 +41,7 @@ PUBLIC_SERVICE_NAME = 'ui'
 
 Configurator = uiconfig.Configurator
 Flag = uiconfig.Flag
+KeyEvent = constants.KeyEvent
 Timeout = uiconfig.Timeout
 ToolType = uiconfig.ToolType
 UiDevice = uidevice.UiDevice

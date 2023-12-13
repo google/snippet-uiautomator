@@ -156,13 +156,14 @@ Or use
 [KeyEvent](https://developer.android.com/reference/android/view/KeyEvent.html)
 
 ```python
->>> KEYCODE_HOME = 3
->>> ad.ui.press(KEYCODE_HOME)
+>>> ad.ui.press(uiautomator.KeyEvent.KEYCODE_HOME)
 True
 
 # Press BACK then HOME
->>> KEYCODE_BACK = 4
->>> ad.ui.press([KEYCODE_BACK, KEYCODE_HOME])
+>>> ad.ui.press([
+        uiautomator.KeyEvent.KEYCODE_BACK,
+        uiautomator.KeyEvent.KEYCODE_HOME,
+    ])
 True
 ```
 
