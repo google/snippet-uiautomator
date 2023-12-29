@@ -152,7 +152,7 @@ public final class Info {
     abstract @Nullable Long keyInjectionDelay();
 
     /**
-     * Returns the timeout in milliseconds for waiting for an acknowledgement of an uiautomtor
+     * Returns the timeout in milliseconds for waiting for an acknowledgement of an uiautomator
      * scroll swipe action.
      */
     abstract @Nullable Long scrollAcknowledgmentTimeout();
@@ -186,7 +186,7 @@ public final class Info {
         int displaySizeDpX,
         int displaySizeDpY,
         int displayWidth,
-        String currentPackageName,
+        @Nullable String currentPackageName,
         String productName) {
       return new AutoValue_Info_UiDeviceInfo(
           naturalOrientation,
@@ -222,7 +222,7 @@ public final class Info {
     abstract int sdkInt();
 
     /** Retrieves the name of the last package to report accessibility events. */
-    abstract String currentPackageName();
+    abstract @Nullable String currentPackageName();
 
     /** Retrieves the product name of the device. */
     abstract String productName();
