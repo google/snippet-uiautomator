@@ -21,7 +21,6 @@ import pathlib
 from typing import Callable, Mapping, Optional, Sequence, Union
 import xml
 
-from mobly import logger as mobly_logger
 from mobly.controllers.android_device_lib import snippet_client_v2
 from snippet_uiautomator import byselector
 from snippet_uiautomator import constants
@@ -161,8 +160,10 @@ class UiDevice:
       raise_error: bool = False,
   ) -> None:
     self._ui = ui
-    self._serial = self._ui._adb.serial  # pylint: disable=protected-access
+    self._device = self._ui._device  # pylint: disable=protected-access
+    self._serial = self._device.serial
     self._raise_error = raise_error
+    self.log_path = pathlib.Path(self._device.log_path)
 
   def __call__(self, **kwargs) -> uiobject2.UiObject2:
     return uiobject2.UiObject2(
@@ -178,11 +179,6 @@ class UiDevice:
   def raise_error(self, new_value: bool) -> None:
     """Sets True to raise an error, False to return boolean."""
     self._raise_error = new_value
-
-  @property
-  def log_path(self) -> pathlib.Path:
-    """Log path of this device in Mobly."""
-    return utils.get_mobly_ad_log_path(self._ui)
 
   @property
   def height(self) -> int:
@@ -349,7 +345,7 @@ class UiDevice:
 
   def dump(
       self, compressed: bool = False, pretty: bool = True, file: bool = False
-  ) -> Optional[str]:
+  ) -> str:
     """Dumps the current window hierarchy.
 
     Args:
@@ -359,18 +355,16 @@ class UiDevice:
         False to dump as a string.
 
     Returns:
-      The current window hierarchy.
+      The current window hierarchy or the output file path
     """
     self._ui.setCompressedLayoutHierarchy(compressed)
     content = self._ui.dump()
-    timestamp = mobly_logger.get_log_file_timestamp()
     if pretty and '\n ' not in content:
       content = xml.dom.minidom.parseString(content).toprettyxml(indent='  ')
     if file:
-      with open(
-          self.log_path.joinpath(f'window_dump,{timestamp}.xml'),
-          'w',
-          encoding='utf8',
-      ) as f:
+      file_name = self._device.generate_filename('dump', extension_name='xml')
+      file_path = self.log_path.joinpath(file_name)
+      with open(file_path, 'w', encoding='utf8') as f:
         print(content, file=f)
+        return str(file_path)
     return content
