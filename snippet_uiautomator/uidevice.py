@@ -161,6 +161,7 @@ class UiDevice:
   ) -> None:
     self._ui = ui
     self._device = self._ui._device  # pylint: disable=protected-access
+    self._compressed = False
     self._serial = self._device.serial
     self._raise_error = raise_error
     self.log_path = pathlib.Path(self._device.log_path)
@@ -345,7 +346,7 @@ class UiDevice:
 
   def dump(
       self, compressed: bool = False, pretty: bool = True, file: bool = False
-  ) -> str:
+  ) -> Union[str, pathlib.Path]:
     """Dumps the current window hierarchy.
 
     Args:
@@ -355,16 +356,23 @@ class UiDevice:
         False to dump as a string.
 
     Returns:
-      The current window hierarchy or the output file path
+      The current window hierarchy or the output file path.
     """
-    self._ui.setCompressedLayoutHierarchy(compressed)
+    if self._compressed != compressed:
+      self._compressed = compressed
+      self._ui.setCompressedLayoutHierarchy(compressed)
+
+    def process_content(xml_content: str) -> str:
+      if pretty and '\n ' not in content:
+        return xml.dom.minidom.parseString(xml_content).toprettyxml(indent='  ')
+      else:
+        return xml_content
+
     content = self._ui.dump()
-    if pretty and '\n ' not in content:
-      content = xml.dom.minidom.parseString(content).toprettyxml(indent='  ')
     if file:
       file_name = self._device.generate_filename('dump', extension_name='xml')
       file_path = self.log_path.joinpath(file_name)
       with open(file_path, 'w', encoding='utf8') as f:
-        print(content, file=f)
-        return str(file_path)
-    return content
+        print(process_content(content), file=f)
+        return file_path
+    return process_content(content)
