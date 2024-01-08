@@ -50,6 +50,7 @@ class _Press:
 
   def __init__(self, ui: snippet_client_v2.SnippetClientV2) -> None:
     self._ui = ui
+    self._device = self._ui._device  # pylint: disable=protected-access
 
   def __call__(
       self, keycode: Union[int, str, Sequence[int]], meta: Optional[int] = None
@@ -87,7 +88,10 @@ class _Press:
       return self._ui.pressKeyCode(0x000000A4)
     elif keycode == 'volume_up':
       return self._ui.pressKeyCode(0x00000018)
-    raise AttributeError(f"'_Press' object has no attribute {repr(keycode)}")
+    raise AttributeError(
+        f"[AndroidDevice|{self._device.debug_tag}] '_Press' object has no"
+        f' attribute {repr(keycode)}'
+    )
 
 
 class _Screen:
@@ -160,8 +164,8 @@ class UiDevice:
       raise_error: bool = False,
   ) -> None:
     self._ui = ui
-    self._device = self._ui._device  # pylint: disable=protected-access
     self._compressed = False
+    self._device = self._ui._device  # pylint: disable=protected-access
     self._serial = self._device.serial
     self._raise_error = raise_error
     self.log_path = pathlib.Path(self._device.log_path)
@@ -232,7 +236,7 @@ class UiDevice:
       self._ui.setOrientationRight()
     else:
       raise errors.UiAutomatorError(
-          f'Cannot set orientation to {new_orientation}.'
+          f'Cannot set orientation to {new_orientation}.', self._device
       )
 
   @property

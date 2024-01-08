@@ -22,7 +22,6 @@ from __future__ import annotations
 from typing import Optional
 
 from mobly.controllers.android_device_lib import snippet_client_v2
-
 from snippet_uiautomator import byselector
 from snippet_uiautomator import constants
 from snippet_uiautomator import errors
@@ -78,6 +77,7 @@ class UiWatcher:
   ) -> None:
     self._ui = ui
     self._condition = byselector.BySelector()
+    self._device = self._ui._device  # pylint: disable=protected-access
     self.name = name
 
   @property
@@ -107,7 +107,8 @@ class UiWatcher:
     """
     if not args:
       raise errors.ApiError(
-          'At least one key code required when UiWatcher is triggered.'
+          'At least one key code required when UiWatcher is triggered.',
+          self._device,
       )
     self._ui.registerWatcherForKeycodes(
         self.name, self._condition.to_dict(), list(args)

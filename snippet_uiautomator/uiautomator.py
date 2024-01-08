@@ -130,7 +130,8 @@ class UiAutomatorService(base_service.BaseService):
         raise errors.ConfigurationError(
             errors.ERROR_WHEN_APK_IS_NOT_INSTALLED.format(
                 package_name=self._configs.snippet.package_name
-            )
+            ),
+            self._device,
         )
     else:
       if self._is_apk_installed:
@@ -148,8 +149,9 @@ class UiAutomatorService(base_service.BaseService):
       return
 
     if self._configs.snippet.package_name is None:
-      raise errors.ConfigurationError(errors.ERROR_WHEN_PACKAGE_NAME_MISSING)
-
+      raise errors.ConfigurationError(
+          errors.ERROR_WHEN_PACKAGE_NAME_MISSING, self._device
+      )
     start_time = utils.get_latest_logcat_timestamp(self._device)
     try:
       self._device.load_snippet(
@@ -158,7 +160,7 @@ class UiAutomatorService(base_service.BaseService):
     except snippet_errors.ServerStartProtocolError as e:
       if utils.is_uiautomator_service_registered(self._device, start_time):
         raise errors.UiAutomationServiceAlreadyRegisteredError(
-            self._device.serial, errors.ERROR_WHEN_SERVICE_ALREADY_REGISTERED
+            errors.ERROR_WHEN_SERVICE_ALREADY_REGISTERED, self._device
         ) from e
       raise
 
@@ -176,16 +178,18 @@ class UiAutomatorService(base_service.BaseService):
   def ui_device(self) -> UiDevice:
     """Gets the UiDevice object."""
     if not self.is_alive:
-      raise errors.ConfigurationError(errors.ERROR_WHEN_SERVICE_NOT_RUNNING)
+      raise errors.ConfigurationError(
+          errors.ERROR_WHEN_SERVICE_NOT_RUNNING, self._device
+      )
     service = getattr(
         self._device, self._configs.snippet.ui_public_service_name, None
     )
     if service is None:
       raise errors.ConfigurationError(
           errors.ERROR_WHEN_INSTANCE_MISSING.format(
-              instance=self._configs.snippet.ui_public_service_name,
-              serial=self._device.serial,
-          )
+              instance=self._configs.snippet.ui_public_service_name
+          ),
+          self._device,
       )
     return service
 
