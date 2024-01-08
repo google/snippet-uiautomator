@@ -15,15 +15,12 @@
 """Common utils for Snippet UiAutomator."""
 
 import datetime
-import logging
 import pathlib
 import re
 from typing import Union
 
 from mobly import logger as mobly_logger
-from mobly import utils as mobly_utils
 from mobly.controllers import android_device
-from mobly.controllers.android_device_lib import snippet_client_v2
 from snippet_uiautomator import errors
 
 REGEX_LOGCAT_TIMESTAMP = r'\d{2}-\d{2}\s{1,2}\d{2}:\d{2}:\d{2}.\d{3}'
@@ -46,20 +43,6 @@ def get_latest_logcat_timestamp(ad: android_device.AndroidDevice) -> str:
   logcat = ad.adb.logcat(['-d'])
   last_line = logcat.splitlines()[-1]
   return re.findall(REGEX_LOGCAT_TIMESTAMP.encode(), last_line)[-1].decode()
-
-
-def get_mobly_ad_log_path(
-    ui: snippet_client_v2.SnippetClientV2,
-) -> pathlib.Path:
-  """Gets the log path of Mobly AndroidDevice controller."""
-  serial = ui._adb.serial  # pylint: disable=protected-access
-  normalized_serial = mobly_logger.sanitize_filename(serial)
-  log_path = pathlib.Path(
-      mobly_utils.abs_path(getattr(logging, 'log_path', '/tmp/logs')),
-      f'AndroidDevice{normalized_serial}',
-  )
-  mobly_utils.create_dir(log_path)
-  return log_path
 
 
 def get_uiautomator_apk() -> str:

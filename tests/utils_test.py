@@ -46,17 +46,6 @@ def test_get_latest_logcat_timestamp_succeeds():
   assert timestamp == '09-19 04:02:11.326'
 
 
-@mock.patch.object(utils, 'mobly_utils')
-def test_get_mobly_ad_log_path_succeeds(mock_mobly_utils):
-  mock_mobly_utils.abs_path.return_value = str(pathlib.Path('mock', 'path'))
-  ui_snippet_client = mock.MagicMock()
-  ui_snippet_client._adb.serial = '1234'  # pylint: disable=protected-access
-
-  log_path = utils.get_mobly_ad_log_path(ui_snippet_client)
-
-  assert log_path == pathlib.Path('mock', 'path', 'AndroidDevice1234')
-
-
 def test_get_uiautomator_apk_succeeds():
   expected_suffix = pathlib.Path(
       'snippet_uiautomator', 'android', 'app', 'uiautomator.apk'
