@@ -18,7 +18,7 @@ https://developer.android.com/reference/androidx/test/uiautomator/UiDevice
 """
 
 import pathlib
-from typing import Callable, Mapping, Optional, Sequence, Union
+from typing import Callable, Literal, Mapping, Optional, Sequence, Union, overload
 import xml
 
 from mobly.controllers.android_device_lib import snippet_client_v2
@@ -344,6 +344,21 @@ class UiDevice:
     """Simulates pressing the power button if the screen is OFF."""
     return self._ui.wakeUp()
 
+  # Provides hint for pytype checker to avoid the Union[str, pathlib.Path] case.
+  @overload
+  def dump(self, compressed=..., pretty=...) -> str:
+    ...
+
+  @overload
+  def dump(self, compressed=..., pretty=..., file: Literal[False] = ...) -> str:
+    ...
+
+  @overload
+  def dump(
+      self, compressed=..., pretty=..., file: Literal[True] = ...
+  ) -> pathlib.Path:
+    ...
+
   def dump(
       self, compressed: bool = False, pretty: bool = True, file: bool = False
   ) -> Union[str, pathlib.Path]:
@@ -373,6 +388,7 @@ class UiDevice:
       file_name = self._device.generate_filename('dump', extension_name='xml')
       file_path = self.log_path.joinpath(file_name)
       with open(file_path, 'w', encoding='utf8') as f:
-        print(process_content(content), file=f)
-        return file_path
+        f.write(process_content(content))
+      return file_path
+
     return process_content(content)

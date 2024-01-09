@@ -9,9 +9,10 @@
 
 repos:
 - repo: https://github.com/google/pyink
-  rev: 23.5.0
+  rev: 23.10.0
   hooks:
     - id: pyink
+      language_version: python3.11
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.3.0
   hooks:
