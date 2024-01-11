@@ -14,15 +14,17 @@
 
 """Common errors for Snippet UiAutomator."""
 
+from typing import Optional
+
+from mobly.controllers import android_device
+
 ERROR_WHEN_APK_IS_NOT_INSTALLED = (
     '`skip_installing` is True but package {package_name} is not installed'
 )
 ERROR_WHEN_FILE_PATH_MISSING = (
     'Need to provide file path to configuration for installing snippet'
 )
-ERROR_WHEN_INSTANCE_MISSING = (
-    'Missing UiDevice instance {instance} from AndroidDevice {serial}'
-)
+ERROR_WHEN_INSTANCE_MISSING = 'Missing UiDevice instance {instance}'
 ERROR_WHEN_PACKAGE_NAME_MISSING = (
     'Need to provide package name to configuration for launching snippet'
 )
@@ -39,23 +41,29 @@ REGEX_TCP_PORT_NOT_FOUND = rb"adb: error: listener 'tcp:(\d+)' not found\n|$"
 class BaseError(Exception):
   """Base error for Snippet UiAutomator."""
 
-  def __init__(self, serial: str, message: str) -> None:
-    self._serial = serial
+  def __init__(
+      self, message: str, ad: Optional[android_device.AndroidDevice] = None
+  ) -> None:
+    self._ad = ad
     self._message = message
 
   def __str__(self) -> str:
-    return f'[AndroidDevice|{self._serial}] {self._message}'
+    return (
+        self._message
+        if self._ad is None
+        else f'[AndroidDevice|{self._ad.debug_tag}] {self._message}'
+    )
 
 
-class ApiError(Exception):
+class ApiError(BaseError):
   """Raised when an inexistent API is called or API is used incorrectly."""
 
 
-class ConfigurationError(Exception):
+class ConfigurationError(BaseError):
   """Raised when passed incorrect configuration to Snippet UiAutomator."""
 
 
-class UiAutomatorError(Exception):
+class UiAutomatorError(BaseError):
   """Raised when fail to operate UiAutomator."""
 
 

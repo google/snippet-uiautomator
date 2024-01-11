@@ -92,6 +92,7 @@ class _Drag:
       selector: byselector.BySelector,
   ) -> None:
     self._ui = ui
+    self._device = self._ui._device  # pylint: disable=protected-access
     self._selector = selector
 
   def __call__(
@@ -134,7 +135,7 @@ class _Drag:
       return self._ui.dragObj(self._selector.to_dict(), x, y, speed)
     else:
       raise errors.ApiError(
-          'Drag to object and drag to coordinates cannot be mixed'
+          'Drag to object and drag to coordinates cannot be mixed', self._device
       )
 
 
@@ -148,6 +149,7 @@ class _Gesture:
       action: str,
   ) -> None:
     self._ui = ui
+    self._device = self._ui._device  # pylint: disable=protected-access
     self._selector = selector
     self._action = action
 
@@ -158,7 +160,7 @@ class _Gesture:
     if self._action == 'fling':
       if percent != 0:
         raise errors.ApiError(
-            'fling gesture does not support changing the percent'
+            'fling gesture does not support changing the percent', self._device
         )
       return self._ui.fling(self._selector.to_dict(), direction, speed)
     elif self._action == 'swipe':
@@ -166,7 +168,9 @@ class _Gesture:
           self._selector.to_dict(), direction, percent, speed
       )
     else:
-      raise errors.ApiError(f'Unknown gesture action: {repr(self._action)}')
+      raise errors.ApiError(
+          f'Unknown gesture action: {repr(self._action)}', self._device
+      )
 
   def down(self, percent: int = 0, speed: Optional[int] = None) -> bool:
     """Performs a gesture on this object with direction DOWN.
@@ -274,6 +278,7 @@ class _Scroll:
         percent: Optional[float],
     ) -> None:
       self._ui = ui
+      self._device = self._ui._device  # pylint: disable=protected-access
       self._selector = selector
       self._direction = direction
       self._margin = margin
@@ -320,13 +325,16 @@ class _Scroll:
         )
       else:
         raise errors.ApiError(
-            'Scroll by percentage and scroll by condition cannot be mixed'
+            'Scroll by percentage and scroll by condition cannot be mixed',
+            self._device,
         )
 
     def click(self, **kwargs) -> bool:
       """Scrolls until the target object is visible, then clicks."""
       if not kwargs:
-        raise errors.ApiError('Target to scroll to is not defined')
+        raise errors.ApiError(
+            'Target to scroll to is not defined', self._device
+        )
       if self(**kwargs):
         return self._ui.clickObj(kwargs)
       return False
@@ -337,6 +345,7 @@ class _Scroll:
       selector: byselector.BySelector,
   ) -> None:
     self._ui = ui
+    self._device = self._ui._device  # pylint: disable=protected-access
     self._selector = selector
     self._margin = None
     self._percent = None
@@ -347,7 +356,8 @@ class _Scroll:
     """Sets the margins used for scroll gesture."""
     if margin is not None and percent is not None:
       raise errors.ApiError(
-          'Pixel-based and percentage-based margin cannot be mixed'
+          'Pixel-based and percentage-based margin cannot be mixed',
+          self._device,
       )
     self._margin = margin
     self._percent = percent
@@ -390,8 +400,8 @@ class _Wait:
       raise_error: bool = False,
   ) -> None:
     self._ui = ui
+    self._device = self._ui._device  # pylint: disable=protected-access
     self._selector = selector
-    self._serial = self._ui._adb.serial  # pylint: disable=protected-access
     self._raise_error = raise_error
 
   def click(
@@ -431,8 +441,8 @@ class _Wait:
       return True
     if self._raise_error or raise_error:
       raise errors.UiObjectSearchError(
-          self._serial,
           f'Not found Selector{self._selector.to_dict()} over {timeout_ms} ms',
+          self._device,
       )
     return False
 
@@ -457,9 +467,9 @@ class _Wait:
       return True
     if self._raise_error or raise_error:
       raise errors.UiObjectSearchError(
-          self._serial,
           f'Still found Selector{self._selector.to_dict()} over'
           f' {timeout_ms} ms',
+          self._device,
       )
     return False
 
@@ -477,8 +487,8 @@ class UiObject2:
       raise_error: bool = False,
   ) -> None:
     self._ui = ui
+    self._device = self._ui._device  # pylint: disable=protected-access
     self._selector = selector
-    self._serial = self._ui._adb.serial  # pylint: disable=protected-access
     self._raise_error = raise_error
 
   def _create_instance(self, tag: str, **kwargs) -> UiObject2:
@@ -561,7 +571,7 @@ class UiObject2:
     is_exists = self._ui.exists(self._selector.to_dict())
     if not is_exists and self._raise_error:
       raise errors.UiObjectSearchError(
-          self._serial, f'Not found Selector{self._selector.to_dict()}'
+          f'Not found Selector{self._selector.to_dict()}', self._device
       )
     return is_exists
 
