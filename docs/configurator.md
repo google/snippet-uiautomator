@@ -19,7 +19,11 @@ configurator = uiautomator.Configurator(
         uiautomator.Flag.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES,
     ]
 )
-uiautomator.load_uiautomator_service(ad, configurator=configurator)
+ad.services.register(
+    uiautomator.ANDROID_SERVICE_NAME,
+    uiautomator.UiAutomatorService,
+    uiautomator.UiAutomatorConfigs(configurator=configurator),
+)
 ```
 
 ## Timeout
@@ -51,7 +55,11 @@ configurator = uiautomator.Configurator(
         wait_for_selector=datetime.timedelta(seconds=0),
     )
 )
-uiautomator.load_uiautomator_service(ad, configurator=configurator)
+ad.services.register(
+    uiautomator.ANDROID_SERVICE_NAME,
+    uiautomator.UiAutomatorService,
+    uiautomator.UiAutomatorConfigs(configurator=configurator),
+)
 ```
 
 ## Tool Type
@@ -73,7 +81,11 @@ tool types are:
 configurator = uiautomator.Configurator(
     tool_type=uiautomator.ToolType.TOOL_TYPE_FINGER
 )
-uiautomator.load_uiautomator_service(ad, configurator=configurator)
+ad.services.register(
+    uiautomator.ANDROID_SERVICE_NAME,
+    uiautomator.UiAutomatorService,
+    uiautomator.UiAutomatorConfigs(configurator=configurator),
+)
 ```
 
 ## Raise Error
@@ -105,7 +117,11 @@ snippet_uiautomator.errors.UiObjectSearchError: [AndroidDevice|GOOG1234567890] N
 -   Set up when launched
 
     ```python
-    uiautomator.load_uiautomator_service(ad, raise_error=True)
+    ad.services.register(
+        uiautomator.ANDROID_SERVICE_NAME,
+        uiautomator.UiAutomatorService,
+        uiautomator.UiAutomatorConfigs(raise_error=True),
+    )
     ```
 
 -   Change setting after launched
@@ -130,5 +146,9 @@ be skipped if Snippet UiAutomator is wrapped to your own apk and has already
 installed to the phone.
 
 ```python
-uiautomator.load_uiautomator_service(ad, skip_installing=True)
+ad.services.register(
+    uiautomator.ANDROID_SERVICE_NAME,
+    uiautomator.UiAutomatorService,
+    uiautomator.UiAutomatorConfigs(skip_installing=True),
+)
 ```
