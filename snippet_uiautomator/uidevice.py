@@ -89,8 +89,7 @@ class _Press:
     elif keycode == 'volume_up':
       return self._ui.pressKeyCode(0x00000018)
     raise AttributeError(
-        f"[AndroidDevice|{self._device.debug_tag}] '_Press' object has no"
-        f' attribute {repr(keycode)}'
+        f"{self._device} '_Press' object has no attribute {repr(keycode)}"
     )
 
 

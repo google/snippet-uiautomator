@@ -48,11 +48,7 @@ class BaseError(Exception):
     self._message = message
 
   def __str__(self) -> str:
-    return (
-        self._message
-        if self._ad is None
-        else f'[AndroidDevice|{self._ad.debug_tag}] {self._message}'
-    )
+    return self._message if self._ad is None else f'{self._ad} {self._message}'
 
 
 class ApiError(BaseError):
