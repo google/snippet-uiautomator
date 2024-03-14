@@ -1,5 +1,15 @@
 # Snippet UiAutomator Release History
 
+## 1.1.0:
+* Update uiautomator lib to stable 2.3.0
+* Print Mobly AndroidDevice object for better evaluated as a proper prefix
+* Remove deprecated service registration method
+* Add pytype hint to avoid Union[str, pathlib.Path]
+* Include device debug tag when raising an error
+* Refactor the way to get log path and dump to file
+* Handle null value returned from QueryController.getCurrentPackageName
+* Update the visibility of uiDevice in UiDeviceSnippet
+
 ## 1.0.5:
 
 * Update androidx.test.uiautomator to 2.3.0-beta01
