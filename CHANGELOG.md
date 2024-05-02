@@ -1,5 +1,8 @@
 # Snippet UiAutomator Release History
 
+## 1.1.1:
+* Fix the type of percent in scrollUntilFinished and scrollUntil
+
 ## 1.1.0:
 * Update uiautomator lib to stable 2.3.0
 * Print Mobly AndroidDevice object for better evaluated as a proper prefix

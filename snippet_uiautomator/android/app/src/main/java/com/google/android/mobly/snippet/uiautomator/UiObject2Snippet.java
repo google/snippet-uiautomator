@@ -310,8 +310,8 @@ public class UiObject2Snippet implements Snippet {
       throws SelectorException {
     Direction direction = Direction.valueOf(directionStr);
     return speed == null
-        ? operate(selector, uiObject2 -> uiObject2.scroll(direction, percent))
-        : operate(selector, uiObject2 -> uiObject2.scroll(direction, percent, speed));
+        ? operate(selector, uiObject2 -> uiObject2.scroll(direction, percent / 100f))
+        : operate(selector, uiObject2 -> uiObject2.scroll(direction, percent / 100f, speed));
   }
 
   @Rpc(description = "Scrolls to the end of a scrollable layout element.")
@@ -319,7 +319,7 @@ public class UiObject2Snippet implements Snippet {
       Selector selector,
       String directionStr,
       @RpcOptional Integer margin,
-      @RpcOptional Double percent)
+      @RpcOptional Integer percent)
       throws SelectorException {
     Direction direction = Direction.valueOf(directionStr);
     UiObject2 uiObject2 = selector.toUiObject2();
@@ -329,7 +329,7 @@ public class UiObject2Snippet implements Snippet {
     if (margin != null) {
       uiObject2.setGestureMargin(margin);
     } else if (percent != null) {
-      uiObject2.setGestureMarginPercentage(percent.floatValue());
+      uiObject2.setGestureMarginPercentage(percent / 100f);
     }
     try {
       return uiObject2.scrollUntil(direction, Until.scrollFinished(direction));
@@ -350,7 +350,7 @@ public class UiObject2Snippet implements Snippet {
       Selector childSelector,
       String directionStr,
       @RpcOptional Integer margin,
-      @RpcOptional Double percent)
+      @RpcOptional Integer percent)
       throws SelectorException {
     UiObject2 uiObject2 = selector.toUiObject2();
     if (uiObject2 == null) {
@@ -359,7 +359,7 @@ public class UiObject2Snippet implements Snippet {
     if (margin != null) {
       uiObject2.setGestureMargin(margin);
     } else if (percent != null) {
-      uiObject2.setGestureMarginPercentage(percent.floatValue());
+      uiObject2.setGestureMarginPercentage(percent / 100f);
     }
     BySelector childBySelector = childSelector.toBySelector();
     Direction direction = Direction.valueOf(directionStr);

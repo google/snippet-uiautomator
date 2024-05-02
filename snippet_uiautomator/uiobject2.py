@@ -236,7 +236,7 @@ class _Pinch:
     self._ui = ui
     self._selector = selector
 
-  def close(self, percent: float, speed: Optional[int] = None) -> bool:
+  def close(self, percent: int, speed: Optional[int] = None) -> bool:
     """Performs a pinch close gesture on this object.
 
     Args:
@@ -249,7 +249,7 @@ class _Pinch:
     selector_dict = self._selector.to_dict()
     return self._ui.pinchClose(selector_dict, percent, speed)
 
-  def open(self, percent: float, speed: Optional[int] = None) -> bool:
+  def open(self, percent: int, speed: Optional[int] = None) -> bool:
     """Performs a pinch open gesture on this object.
 
     Args:
@@ -275,7 +275,7 @@ class _Scroll:
         selector: byselector.BySelector,
         direction: str,
         margin: Optional[int],
-        percent: Optional[float],
+        percent: Optional[int],
     ) -> None:
       self._ui = ui
       self._device = self._ui._device  # pylint: disable=protected-access
@@ -351,7 +351,7 @@ class _Scroll:
     self._percent = None
 
   def __call__(
-      self, margin: Optional[int] = None, percent: Optional[float] = None
+      self, margin: Optional[int] = None, percent: Optional[int] = None
   ) -> _Scroll:
     """Sets the margins used for scroll gesture."""
     if margin is not None and percent is not None:
