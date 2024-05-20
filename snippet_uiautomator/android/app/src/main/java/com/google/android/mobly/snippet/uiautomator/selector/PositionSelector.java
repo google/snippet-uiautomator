@@ -23,6 +23,7 @@ import androidx.test.uiautomator.UiObject2;
 import com.google.android.mobly.snippet.uiautomator.UiAutomator;
 import com.google.common.collect.ImmutableList;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /** Finds the target UiObject2 by its relative position to the original UiObject2. */
@@ -82,7 +83,7 @@ public final class PositionSelector {
                           return false;
                       }
                     })
-                .iterator());
+                .collect(Collectors.toList()));
 
     switch (position) {
       case "bottom":

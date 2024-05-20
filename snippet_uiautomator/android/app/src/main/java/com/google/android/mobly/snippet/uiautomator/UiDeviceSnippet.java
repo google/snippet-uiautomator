@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,7 +68,7 @@ public class UiDeviceSnippet implements Snippet {
     return ImmutableList.copyOf(
         uiDevice.findObjects(selector.toBySelector()).stream()
             .map(Info::getUiObject2Info)
-            .iterator()
+            .collect(Collectors.toList())
     );
   }
 

@@ -38,6 +38,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -121,7 +122,7 @@ public class UiObject2Snippet implements Snippet {
       return ImmutableList.copyOf(
           uiObject2.findObjects(childSelector.toBySelector()).stream()
               .map(Info::getUiObject2Info)
-              .iterator());
+              .collect(Collectors.toList()));
     } finally {
       uiObject2.recycle();
     }
@@ -151,7 +152,7 @@ public class UiObject2Snippet implements Snippet {
                   ImmutableList.copyOf(
                       uiObject2.getChildren().stream()
                           .map(Info::getUiObject2Info)
-                          .iterator()))
+                          .collect(Collectors.toList())))
           .orElse(ImmutableList.of());
     } finally {
       recycle(uiObject2OrEmpty);

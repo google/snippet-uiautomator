@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONException;
@@ -100,7 +101,7 @@ public class Selector {
                 parentUiObject2.findObjects(bySelector).stream()
                     .filter(childUiObject2 -> !childUiObject2.equals(baseUiObject2))
                     .filter(childrenDirectlyUnderParent::contains)
-                    .iterator());
+                    .collect(Collectors.toList()));
         break;
       case "bottom":
       case "left":
