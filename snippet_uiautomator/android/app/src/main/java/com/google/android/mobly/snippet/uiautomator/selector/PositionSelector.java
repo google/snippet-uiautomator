@@ -16,8 +16,6 @@
 
 package com.google.android.mobly.snippet.uiautomator.selector;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-
 import android.graphics.Rect;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
@@ -63,27 +61,28 @@ public final class PositionSelector {
     }
 
     ImmutableList<UiObject2> matchedUiObject2List =
-        uiDevice.findObjects(bySelector).stream()
-            .filter(
-                matchedUiObject2 -> {
-                  switch (position) {
-                    case "bottom":
-                      return isAtBottom(
-                          uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
-                    case "right":
-                      return isAtRight(
-                          uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
-                    case "top":
-                      return isAtTop(
-                          uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
-                    case "left":
-                      return isAtLeft(
-                          uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
-                    default:
-                      return false;
-                  }
-                })
-            .collect(toImmutableList());
+        ImmutableList.copyOf(
+            uiDevice.findObjects(bySelector).stream()
+                .filter(
+                    matchedUiObject2 -> {
+                      switch (position) {
+                        case "bottom":
+                          return isAtBottom(
+                              uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
+                        case "right":
+                          return isAtRight(
+                              uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
+                        case "top":
+                          return isAtTop(
+                              uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
+                        case "left":
+                          return isAtLeft(
+                              uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
+                        default:
+                          return false;
+                      }
+                    })
+                .iterator());
 
     switch (position) {
       case "bottom":

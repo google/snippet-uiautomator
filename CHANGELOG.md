@@ -1,6 +1,7 @@
 # Snippet UiAutomator Release History
 
 ## 1.1.1:
+* Migrate -jre flavor of Guava to -android flavor
 * Fix the type of percent in scrollUntilFinished and scrollUntil
 
 ## 1.1.0:

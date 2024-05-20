@@ -16,8 +16,6 @@
 
 package com.google.android.mobly.snippet.uiautomator;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-
 import android.os.RemoteException;
 import androidx.test.uiautomator.UiDevice;
 import com.google.android.mobly.snippet.Snippet;
@@ -66,9 +64,11 @@ public class UiDeviceSnippet implements Snippet {
 
   @Rpc(description = "Returns all objects that match the selector criteria.")
   public ImmutableList<UiObject2Info> findObjects(Selector selector) throws SelectorException {
-    return uiDevice.findObjects(selector.toBySelector()).stream()
-        .map(Info::getUiObject2Info)
-        .collect(toImmutableList());
+    return ImmutableList.copyOf(
+        uiDevice.findObjects(selector.toBySelector()).stream()
+            .map(Info::getUiObject2Info)
+            .iterator()
+    );
   }
 
   @Rpc(description = "Disables the sensors and freezes rotation at its current rotation state.")

@@ -16,8 +16,6 @@
 
 package com.google.android.mobly.snippet.uiautomator;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-
 import android.graphics.Point;
 
 import androidx.test.uiautomator.BySelector;
@@ -120,9 +118,10 @@ public class UiObject2Snippet implements Snippet {
       return ImmutableList.of();
     }
     try {
-      return uiObject2.findObjects(childSelector.toBySelector()).stream()
-          .map(Info::getUiObject2Info)
-          .collect(toImmutableList());
+      return ImmutableList.copyOf(
+          uiObject2.findObjects(childSelector.toBySelector()).stream()
+              .map(Info::getUiObject2Info)
+              .iterator());
     } finally {
       uiObject2.recycle();
     }
@@ -149,9 +148,10 @@ public class UiObject2Snippet implements Snippet {
       return uiObject2OrEmpty
           .map(
               uiObject2 ->
-                  uiObject2.getChildren().stream()
-                      .map(Info::getUiObject2Info)
-                      .collect(toImmutableList()))
+                  ImmutableList.copyOf(
+                      uiObject2.getChildren().stream()
+                          .map(Info::getUiObject2Info)
+                          .iterator()))
           .orElse(ImmutableList.of());
     } finally {
       recycle(uiObject2OrEmpty);
