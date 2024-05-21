@@ -19,13 +19,11 @@ package com.google.android.mobly.snippet.uiautomator;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
 import android.graphics.Point;
-
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.StaleObjectException;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
-
 import com.google.android.mobly.snippet.Snippet;
 import com.google.android.mobly.snippet.rpc.Rpc;
 import com.google.android.mobly.snippet.rpc.RpcOptional;
@@ -36,11 +34,9 @@ import com.google.android.mobly.snippet.uiautomator.selector.Selector;
 import com.google.android.mobly.snippet.uiautomator.selector.SelectorException;
 import com.google.android.mobly.snippet.util.Log;
 import com.google.common.collect.ImmutableList;
-
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**

@@ -40,5 +40,6 @@ dependencies {
     implementation 'androidx.test:runner:1.5.2'
     implementation 'androidx.test.uiautomator:uiautomator:2.3.0'
     implementation 'com.google.android.mobly:mobly-snippet-lib:1.4.0'
-    implementation 'com.google.guava:guava:31.1-jre'
+    //noinspection GradleDependency, see https://github.com/google/guava/wiki/ReleasePolicy#flavors.
+    implementation 'com.google.guava:guava:33.2.0-android'
 }
