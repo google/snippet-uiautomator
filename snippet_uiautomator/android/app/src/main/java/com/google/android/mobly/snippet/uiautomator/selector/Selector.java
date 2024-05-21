@@ -16,20 +16,20 @@
 
 package com.google.android.mobly.snippet.uiautomator.selector;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 import com.google.android.mobly.snippet.uiautomator.UiAutomator;
 import com.google.android.mobly.snippet.util.Log;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONException;
@@ -97,11 +97,10 @@ public class Selector {
         }
         List<UiObject2> childrenDirectlyUnderParent = parentUiObject2.getChildren();
         uiObject2List =
-            ImmutableList.copyOf(
-                parentUiObject2.findObjects(bySelector).stream()
-                    .filter(childUiObject2 -> !childUiObject2.equals(baseUiObject2))
-                    .filter(childrenDirectlyUnderParent::contains)
-                    .collect(Collectors.toList()));
+            parentUiObject2.findObjects(bySelector).stream()
+                .filter(childUiObject2 -> !childUiObject2.equals(baseUiObject2))
+                .filter(childrenDirectlyUnderParent::contains)
+                .collect(toImmutableList());
         break;
       case "bottom":
       case "left":

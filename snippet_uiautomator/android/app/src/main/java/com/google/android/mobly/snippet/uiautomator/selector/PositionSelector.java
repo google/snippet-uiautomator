@@ -16,6 +16,8 @@
 
 package com.google.android.mobly.snippet.uiautomator.selector;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 import android.graphics.Rect;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
@@ -23,7 +25,6 @@ import androidx.test.uiautomator.UiObject2;
 import com.google.android.mobly.snippet.uiautomator.UiAutomator;
 import com.google.common.collect.ImmutableList;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /** Finds the target UiObject2 by its relative position to the original UiObject2. */
@@ -62,28 +63,27 @@ public final class PositionSelector {
     }
 
     ImmutableList<UiObject2> matchedUiObject2List =
-        ImmutableList.copyOf(
-            uiDevice.findObjects(bySelector).stream()
-                .filter(
-                    matchedUiObject2 -> {
-                      switch (position) {
-                        case "bottom":
-                          return isAtBottom(
-                              uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
-                        case "right":
-                          return isAtRight(
-                              uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
-                        case "top":
-                          return isAtTop(
-                              uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
-                        case "left":
-                          return isAtLeft(
-                              uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
-                        default:
-                          return false;
-                      }
-                    })
-                .collect(Collectors.toList()));
+        uiDevice.findObjects(bySelector).stream()
+            .filter(
+                matchedUiObject2 -> {
+                  switch (position) {
+                    case "bottom":
+                      return isAtBottom(
+                          uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
+                    case "right":
+                      return isAtRight(
+                          uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
+                    case "top":
+                      return isAtTop(
+                          uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
+                    case "left":
+                      return isAtLeft(
+                          uiObject2.getVisibleBounds(), matchedUiObject2.getVisibleBounds());
+                    default:
+                      return false;
+                  }
+                })
+            .collect(toImmutableList());
 
     switch (position) {
       case "bottom":
