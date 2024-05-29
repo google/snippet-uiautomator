@@ -76,6 +76,14 @@ ad.ui(text='Example', enabled=True, depth=3)
 Selector supports to narrow down the search scope to objects that are related to
 itself.
 
+*   Ancestor
+
+    Find the ancestor directly above present Selector.
+
+    ```python
+    ad.ui(...).ancestor(...)
+    ```
+
 *   Child
 
     Find the child directly under present Selector.

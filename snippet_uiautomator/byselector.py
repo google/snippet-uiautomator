@@ -37,7 +37,16 @@ class BySelector:
   https://developer.android.com/reference/androidx/test/uiautomator/BySelector
   """
 
-  SUBSELECTOR = ('child', 'parent', 'sibling', 'bottom', 'left', 'right', 'top')
+  SUBSELECTOR = (
+      'ancestor',
+      'child',
+      'parent',
+      'sibling',
+      'bottom',
+      'left',
+      'right',
+      'top',
+  )
 
   def __init__(self, **kwargs) -> None:
     """Converts the keyword arguments to selector type."""

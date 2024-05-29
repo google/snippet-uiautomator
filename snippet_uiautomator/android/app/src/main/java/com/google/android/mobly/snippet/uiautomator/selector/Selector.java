@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,13 +42,33 @@ import org.json.JSONObject;
  */
 public class Selector {
   private static final ImmutableSet<String> SUB_SELECTORS =
-      ImmutableSet.of("child", "parent", "sibling", "bottom", "left", "right", "top");
+      ImmutableSet.of("ancestor", "child", "parent", "sibling", "bottom", "left", "right", "top");
   private final UiDevice uiDevice = UiAutomator.getUiDevice();
   private final ImmutableMap<String, IBySelector> bySelectorMap = BySelectorMap.create();
   private final JSONObject selector;
 
   public Selector(JSONObject selector) {
     this.selector = selector;
+  }
+
+  private boolean isCriteriaMatch(UiObject2 uiObject2, BySelector bySelector) {
+    for (UiObject2 matchedObject : uiDevice.findObjects(bySelector)) {
+      if (matchedObject.equals(uiObject2)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private @Nullable UiObject2 findAncestorObject(UiObject2 uiObject2, BySelector bySelector) {
+    UiObject2 parentUiObject2 = uiObject2.getParent();
+    while (parentUiObject2 != null) {
+      if (isCriteriaMatch(parentUiObject2, bySelector)) {
+        return parentUiObject2;
+      }
+      parentUiObject2 = parentUiObject2.getParent();
+    }
+    return null;
   }
 
   private @Nullable BySelector getBySelector(JSONObject selector) throws SelectorException {
@@ -84,6 +103,9 @@ public class Selector {
 
     List<UiObject2> uiObject2List = new ArrayList<>();
     switch (type) {
+      case "ancestor":
+        uiObject2List.add(findAncestorObject(baseUiObject2, bySelector));
+        break;
       case "child":
         uiObject2List = baseUiObject2.findObjects(bySelector);
         break;
@@ -123,7 +145,10 @@ public class Selector {
       UiObject2 matchedUiObject2 = null;
 
       try {
-        if (selector.has("child")) {
+        if (selector.has("ancestor")) {
+          matchedUiObject2 =
+              getUiObject2(selector.getJSONObject("ancestor"), uiObject2, "ancestor");
+        } else if (selector.has("child")) {
           matchedUiObject2 = getUiObject2(selector.getJSONObject("child"), uiObject2, "child");
         } else if (selector.has("parent")) {
           matchedUiObject2 = getUiObject2(selector.getJSONObject("parent"), uiObject2, "parent");
