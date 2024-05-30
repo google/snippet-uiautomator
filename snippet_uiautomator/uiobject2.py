@@ -502,6 +502,10 @@ class UiObject2:
     """Finds this object's parent, or null if it has no parent."""
     return self._create_instance('parent')
 
+  def ancestor(self, **kwargs) -> UiObject2:
+    """Finds this object's ancestor, or null if it has no matched ancestor."""
+    return self._create_instance('ancestor', **kwargs)
+
   def child(self, **kwargs) -> UiObject2:
     """Finds the child object directly under this object."""
     return self._create_instance('child', **kwargs)
