@@ -28,31 +28,19 @@ ad.services.register(
 
 ## Timeout
 
-By default, Snippet UiAutomator will set `wait_for_selector` to 0 seconds, which
-means there will be no waiting for a widget matched by a selector to become
-visible.
+By default, Snippet UiAutomator will set `wait_for_idle` to 0 seconds, which
+means there will be no waiting for the user interface to go into an idle
+state before starting a uiautomator action.
 
 Timeouts can be also customized via passing
 [datetime.timedelta](https://docs.python.org/3/library/datetime.html#timedelta-objects).
 
--   [key_injection_delay](https://developer.android.com/reference/androidx/test/uiautomator/Configurator#setKeyInjectionDelay\(long\))
-
--   [action_acknowledgment](https://developer.android.com/reference/androidx/test/uiautomator/Configurator#setActionAcknowledgmentTimeout\(long\))
-
--   [scroll_acknowledgment](https://developer.android.com/reference/androidx/test/uiautomator/Configurator#setScrollAcknowledgmentTimeout\(long\))
-
 -   [wait_for_idle](https://developer.android.com/reference/androidx/test/uiautomator/Configurator#setWaitForIdleTimeout\(long\))
-
--   [wait_for_selector](https://developer.android.com/reference/androidx/test/uiautomator/Configurator#setWaitForSelectorTimeout\(long\))
 
 ```python
 configurator = uiautomator.Configurator(
     timeout=uiautomator.Timeout(
-        key_injection_delay=datetime.timedelta(seconds=0),
-        action_acknowledgment=datetime.timedelta(seconds=0),
-        scroll_acknowledgment=datetime.timedelta(seconds=0),
         wait_for_idle=datetime.timedelta(seconds=0),
-        wait_for_selector=datetime.timedelta(seconds=0),
     )
 )
 ad.services.register(

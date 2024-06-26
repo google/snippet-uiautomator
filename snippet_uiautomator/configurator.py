@@ -23,7 +23,6 @@ import enum
 import functools
 from typing import Mapping, Optional, Sequence
 
-from snippet_uiautomator import constants
 from snippet_uiautomator import utils
 
 
@@ -72,25 +71,11 @@ class Timeout:
   """Indicates timers to wait for UiAutomator to take specific actions.
 
   Attributes:
-    key_injection_delay: Delay time between key presses when injecting text
-      input.
-    action_acknowledgment: Wait for an acknowledgment of generic uiautomator
-      actions. Generally, this timeout should not be modified.
-    scroll_acknowledgment: Wait for an acknowledgement of an uiautomtor scroll
-      swipe action. Generally, this timeout should not be modified.
     wait_for_idle: Wait for the user interface to go into an idle state before
       starting a uiautomator action.
-    wait_for_selector: Wait for a widget to become visible in the user interface
-      so that it can be matched by a selector.
   """
 
-  key_injection_delay: Optional[datetime.timedelta] = None
-  action_acknowledgment: Optional[datetime.timedelta] = None
-  scroll_acknowledgment: Optional[datetime.timedelta] = None
   wait_for_idle: Optional[datetime.timedelta] = None
-  wait_for_selector: datetime.timedelta = (
-      constants.DEFAULT_WAIT_FOR_SELECTOR_TIMEOUT
-  )
 
 
 @dataclasses.dataclass(frozen=True)
@@ -123,25 +108,9 @@ class Configurator:
           lambda x, y: x | y, self.flags
       )
 
-    if self.timeout.action_acknowledgment is not None:
-      config['actionAcknowledgmentTimeout'] = utils.covert_to_millisecond(
-          self.timeout.action_acknowledgment
-      )
-    if self.timeout.key_injection_delay is not None:
-      config['keyInjectionDelay'] = utils.covert_to_millisecond(
-          self.timeout.key_injection_delay
-      )
-    if self.timeout.scroll_acknowledgment is not None:
-      config['scrollAcknowledgmentTimeout'] = utils.covert_to_millisecond(
-          self.timeout.scroll_acknowledgment
-      )
     if self.timeout.wait_for_idle is not None:
       config['waitForIdleTimeout'] = utils.covert_to_millisecond(
           self.timeout.wait_for_idle
-      )
-    if self.timeout.wait_for_selector is not None:
-      config['waitForSelectorTimeout'] = utils.covert_to_millisecond(
-          self.timeout.wait_for_selector
       )
 
     return config

@@ -125,37 +125,11 @@ public final class Info {
   public abstract static class ConfiguratorInfo {
 
     public static ConfiguratorInfo create(
-        @Nullable Long actionAcknowledgmentTimeout,
-        @Nullable Long keyInjectionDelay,
-        @Nullable Long scrollAcknowledgmentTimeout,
         @Nullable Integer toolType,
         @Nullable Integer uiAutomationFlags,
-        @Nullable Long waitForIdleTimeout,
-        @Nullable Long waitForSelectorTimeout) {
-      return new AutoValue_Info_ConfiguratorInfo(
-          actionAcknowledgmentTimeout,
-          keyInjectionDelay,
-          scrollAcknowledgmentTimeout,
-          toolType,
-          uiAutomationFlags,
-          waitForIdleTimeout,
-          waitForSelectorTimeout);
+        @Nullable Long waitForIdleTimeout) {
+      return new AutoValue_Info_ConfiguratorInfo(toolType, uiAutomationFlags, waitForIdleTimeout);
     }
-
-    /**
-     * Returns the current timeout in milliseconds for waiting for an acknowledgment of generic
-     * uiautomator actions.
-     */
-    abstract @Nullable Long actionAcknowledgmentTimeout();
-
-    /** Returns the current delay in milliseconds between key presses when injecting text input. */
-    abstract @Nullable Long keyInjectionDelay();
-
-    /**
-     * Returns the timeout in milliseconds for waiting for an acknowledgement of an uiautomator
-     * scroll swipe action.
-     */
-    abstract @Nullable Long scrollAcknowledgmentTimeout();
 
     /** Returns the current tool type to use for motion events. */
     abstract @Nullable Integer toolType();
@@ -168,12 +142,6 @@ public final class Info {
      * into an idle state.
      */
     abstract @Nullable Long waitForIdleTimeout();
-
-    /**
-     * Returns the current timeout in milliseconds for waiting for a widget to become visible in the
-     * user interface so that it can be matched by a selector.
-     */
-    abstract @Nullable Long waitForSelectorTimeout();
   }
 
   /** Corresponds to the properties of androidx.test.uiautomator.UiDevice. */
