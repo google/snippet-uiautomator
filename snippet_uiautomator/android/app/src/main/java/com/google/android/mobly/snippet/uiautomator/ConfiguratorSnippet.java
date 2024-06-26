@@ -17,11 +17,9 @@
 package com.google.android.mobly.snippet.uiautomator;
 
 import androidx.test.uiautomator.Configurator;
-
 import com.google.android.mobly.snippet.Snippet;
 import com.google.android.mobly.snippet.rpc.Rpc;
 import com.google.android.mobly.snippet.uiautomator.Info.ConfiguratorInfo;
-
 import org.json.JSONException;
 
 /**
@@ -37,34 +35,9 @@ public class ConfiguratorSnippet implements Snippet {
   @Rpc(description = "Gets all properties of Configurator.")
   public ConfiguratorInfo getConfigurator() {
     return ConfiguratorInfo.create(
-        /* actionAcknowledgmentTimeout= */ configurator.getActionAcknowledgmentTimeout(),
-        /* keyInjectionDelay= */ configurator.getKeyInjectionDelay(),
-        /* scrollAcknowledgmentTimeout= */ configurator.getScrollAcknowledgmentTimeout(),
         /* toolType= */ configurator.getToolType(),
         /* uiAutomationFlags= */ configurator.getUiAutomationFlags(),
-        /* waitForIdleTimeout= */ configurator.getWaitForIdleTimeout(),
-        /* waitForSelectorTimeout= */ configurator.getWaitForSelectorTimeout());
-  }
-
-  @Rpc(
-      description =
-          "Gets the current timeout for waiting for an acknowledgment of generic uiautomator"
-              + " actions, such as clicks, text setting, and menu presses.")
-  public long getActionAcknowledgmentTimeout() {
-    return configurator.getActionAcknowledgmentTimeout();
-  }
-
-  @Rpc(description = "Gets the current delay between key presses when injecting text input.")
-  public long getKeyInjectionDelay() {
-    return configurator.getKeyInjectionDelay();
-  }
-
-  @Rpc(
-      description =
-          "Gets the timeout for waiting for an acknowledgement of an uiautomator scroll swipe"
-              + " action.")
-  public long getScrollAcknowledgmentTimeout() {
-    return configurator.getScrollAcknowledgmentTimeout();
+        /* waitForIdleTimeout= */ configurator.getWaitForIdleTimeout());
   }
 
   @Rpc(description = "Gets the current tool type to use for motion events.")
@@ -87,25 +60,8 @@ public class ConfiguratorSnippet implements Snippet {
     return configurator.getWaitForIdleTimeout();
   }
 
-  @Rpc(
-      description =
-          "Gets the current timeout in milliseconds for waiting for a widget to become visible in"
-              + " the user interface so that it can be matched by a selector.")
-  public long getWaitForSelectorTimeout() {
-    return configurator.getWaitForSelectorTimeout();
-  }
-
   @Rpc(description = "Sets up Configurator.")
   public void setConfigurator(ConfiguratorInfo config) throws JSONException {
-    if (config.actionAcknowledgmentTimeout() != null) {
-      configurator.setActionAcknowledgmentTimeout(config.actionAcknowledgmentTimeout());
-    }
-    if (config.keyInjectionDelay() != null) {
-      configurator.setKeyInjectionDelay(config.keyInjectionDelay());
-    }
-    if (config.scrollAcknowledgmentTimeout() != null) {
-      configurator.setScrollAcknowledgmentTimeout(config.scrollAcknowledgmentTimeout());
-    }
     if (config.toolType() != null) {
       configurator.setToolType(config.toolType());
     }
@@ -115,30 +71,6 @@ public class ConfiguratorSnippet implements Snippet {
     if (config.waitForIdleTimeout() != null) {
       configurator.setWaitForIdleTimeout(config.waitForIdleTimeout());
     }
-    if (config.waitForSelectorTimeout() != null) {
-      configurator.setWaitForSelectorTimeout(config.waitForSelectorTimeout());
-    }
-  }
-
-  @Rpc(
-      description =
-          "Sets the timeout for waiting for an acknowledgment of generic uiautomator actions, such"
-              + " as clicks, text setting, and menu presses.")
-  public void setActionAcknowledgmentTimeout(long timeoutInMillis) {
-    configurator.setActionAcknowledgmentTimeout(timeoutInMillis);
-  }
-
-  @Rpc(description = "Sets a delay between key presses when injecting text input.")
-  public void setKeyInjectionDelay(long delayInMillis) {
-    configurator.setKeyInjectionDelay(delayInMillis);
-  }
-
-  @Rpc(
-      description =
-          "Sets the timeout for waiting for an acknowledgement of an uiautomator scroll swipe"
-              + " action.")
-  public void setScrollAcknowledgmentTimeout(long timeoutInMillis) {
-    configurator.setScrollAcknowledgmentTimeout(timeoutInMillis);
   }
 
   @Rpc(description = "Sets the current tool type to use for motion events.")
@@ -157,14 +89,6 @@ public class ConfiguratorSnippet implements Snippet {
               + " starting a uiautomator action.")
   public void setWaitForIdleTimeout(long timeoutInMillis) {
     configurator.setWaitForIdleTimeout(timeoutInMillis);
-  }
-
-  @Rpc(
-      description =
-          "Sets the timeout for waiting for a widget to become visible in the user interface so"
-              + " that it can be matched by a selector.")
-  public void setWaitForSelectorTimeout(long timeoutInMillis) {
-    configurator.setWaitForSelectorTimeout(timeoutInMillis);
   }
 
   @Override

@@ -46,13 +46,9 @@ public class Converter implements SnippetObjectConverter {
       return obj;
     } else if (object instanceof ConfiguratorInfo) {
       ConfiguratorInfo configuratorInfo = (ConfiguratorInfo) object;
-      obj.put("actionAcknowledgmentTimeout", configuratorInfo.actionAcknowledgmentTimeout());
-      obj.put("keyInjectionDelay", configuratorInfo.keyInjectionDelay());
-      obj.put("scrollAcknowledgmentTimeout", configuratorInfo.scrollAcknowledgmentTimeout());
       obj.put("toolType", configuratorInfo.toolType());
       obj.put("uiAutomationFlags", configuratorInfo.uiAutomationFlags());
       obj.put("waitForIdleTimeout", configuratorInfo.waitForIdleTimeout());
-      obj.put("waitForSelectorTimeout", configuratorInfo.waitForSelectorTimeout());
       return obj;
     } else if (object instanceof UiDeviceInfo) {
       UiDeviceInfo uiDeviceInfo = (UiDeviceInfo) object;
@@ -98,19 +94,9 @@ public class Converter implements SnippetObjectConverter {
       return new Selector(jsonObject);
     } else if (type == ConfiguratorInfo.class) {
       return ConfiguratorInfo.create(
-          jsonObject.has("actionAcknowledgmentTimeout")
-              ? jsonObject.getLong("actionAcknowledgmentTimeout")
-              : null,
-          jsonObject.has("keyInjectionDelay") ? jsonObject.getLong("keyInjectionDelay") : null,
-          jsonObject.has("scrollAcknowledgmentTimeout")
-              ? jsonObject.getLong("scrollAcknowledgmentTimeout")
-              : null,
           jsonObject.has("toolType") ? jsonObject.getInt("toolType") : null,
           jsonObject.has("uiAutomationFlags") ? jsonObject.getInt("uiAutomationFlags") : null,
-          jsonObject.has("waitForIdleTimeout") ? jsonObject.getLong("waitForIdleTimeout") : null,
-          jsonObject.has("waitForSelectorTimeout")
-              ? jsonObject.getLong("waitForSelectorTimeout")
-              : null);
+          jsonObject.has("waitForIdleTimeout") ? jsonObject.getLong("waitForIdleTimeout") : null);
     }
     return null;
   }
