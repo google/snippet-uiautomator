@@ -309,8 +309,8 @@ public class UiObject2Snippet implements Snippet {
       @RpcOptional Integer gestureMargin,
       @RpcOptional Integer gestureMarginPercent)
       throws SelectorException {
-    Direction direction = Direction.valueOf(directionStr);
-    UiObject2 uiObject2 = selector.toUiObject2();
+    final Direction direction = Direction.valueOf(directionStr);
+    final UiObject2 uiObject2 = selector.toUiObject2();
     if (uiObject2 == null) {
       return false;
     }
