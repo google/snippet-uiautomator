@@ -302,12 +302,34 @@ public class UiObject2Snippet implements Snippet {
 
   @Rpc(description = "Performs a scroll gesture in pixels per second on this object.")
   public boolean scroll(
-      Selector selector, String directionStr, int percent, @RpcOptional Integer speed)
+      Selector selector,
+      String directionStr,
+      int percent,
+      @RpcOptional Integer speed,
+      @RpcOptional Integer gestureMargin,
+      @RpcOptional Integer gestureMarginPercent)
       throws SelectorException {
-    Direction direction = Direction.valueOf(directionStr);
-    return speed == null
-        ? operate(selector, uiObject2 -> uiObject2.scroll(direction, percent / 100f))
-        : operate(selector, uiObject2 -> uiObject2.scroll(direction, percent / 100f, speed));
+    final Direction direction = Direction.valueOf(directionStr);
+    final UiObject2 uiObject2 = selector.toUiObject2();
+    if (uiObject2 == null) {
+      return false;
+    }
+    if (gestureMargin != null) {
+      Log.i("Setting gesture margin to " + gestureMargin);
+      uiObject2.setGestureMargin(gestureMargin);
+    } else if (gestureMarginPercent != null) {
+      Log.i("Setting gesture margin percentage to " + gestureMarginPercent);
+      uiObject2.setGestureMarginPercentage(gestureMarginPercent / 100f);
+    }
+    try {
+      if (speed == null) {
+        return uiObject2.scroll(direction, percent / 100f);
+      } else {
+        return uiObject2.scroll(direction, percent / 100f, speed);
+      }
+    } finally {
+      uiObject2.recycle();
+    }
   }
 
   @Rpc(description = "Scrolls to the end of a scrollable layout element.")

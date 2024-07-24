@@ -321,7 +321,12 @@ class _Scroll:
         )
       elif percent is not None and not kwargs:
         return self._ui.scroll(
-            self._selector.to_dict(), self._direction, percent, speed
+            self._selector.to_dict(),
+            self._direction,
+            percent,
+            speed,
+            self._margin,
+            self._percent,
         )
       else:
         raise errors.ApiError(
