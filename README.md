@@ -52,6 +52,12 @@ To learn more about Mobly, visit
 
 ### Launch UiAutomator Service
 
+> [!WARNING]
+> UiAutomation is a service that can only be used by one app at a time. If this
+> service is already being registered by another app, Snippet UiAutomator will
+> not be able to start. To resolve this issue, stop the app holding the
+> UiAutomation service before calling Snippet UiAutomator.
+
 Snippet UiAutomator supports launching as one of
 [Mobly Android Device Service](https://github.com/google/mobly/blob/master/docs/android_device_service.md).
 
