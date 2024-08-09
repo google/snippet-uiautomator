@@ -27,6 +27,7 @@ import com.google.android.mobly.snippet.util.Log;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +72,8 @@ public class Selector {
     return null;
   }
 
-  private @Nullable BySelector getBySelector(JSONObject selector) throws SelectorException {
+  private @Nullable BySelector getBySelector(JSONObject selector, String type)
+      throws SelectorException {
     Log.d(String.format("Receive selector: %s", selector));
     BySelector bySelector = null;
     Iterator<String> keys = selector.keys();
@@ -79,6 +81,13 @@ public class Selector {
       String key = keys.next();
       if (SUB_SELECTORS.contains(key)) {
         continue;
+      }
+      if (key.equals("index")) {
+        if (type.equals("child")) {
+          continue;
+        } else {
+          throw new SelectorException("Index search is only supported in child selector");
+        }
       }
       try {
         bySelector =
@@ -96,7 +105,7 @@ public class Selector {
   private @Nullable UiObject2 getUiObject2(
       JSONObject selector, @Nullable UiObject2 baseUiObject2, String type)
       throws SelectorException {
-    BySelector bySelector = getBySelector(selector);
+    BySelector bySelector = getBySelector(selector, type);
     if (bySelector == null && type.equals("self")) {
       return null;
     }
@@ -108,6 +117,19 @@ public class Selector {
         break;
       case "child":
         uiObject2List = baseUiObject2.findObjects(bySelector);
+        if (selector.has("index")) {
+          try {
+            int index = selector.getInt("index");
+            if (index >= 0 && index < uiObject2List.size()) {
+              uiObject2List = Collections.singletonList(uiObject2List.get(index));
+            } else {
+              return null;
+            }
+          } catch (JSONException e) {
+            throw new SelectorException(
+                String.format("Fail to get index value from Selector<%s>", selector), e);
+          }
+        }
         break;
       case "parent":
         uiObject2List.add(baseUiObject2.getParent());
@@ -178,11 +200,11 @@ public class Selector {
   }
 
   public @Nullable BySelector toBySelector() throws SelectorException {
-    return getBySelector(selector);
+    return getBySelector(selector, "self");
   }
 
   public @Nullable UiObject2 toUiObject2() throws SelectorException {
-    BySelector bySelector = getBySelector(selector);
+    BySelector bySelector = getBySelector(selector, "self");
     if (bySelector == null) {
       return null;
     }

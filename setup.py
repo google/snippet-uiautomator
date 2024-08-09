@@ -17,7 +17,7 @@ import setuptools
 
 setuptools.setup(
     name='snippet-uiautomator',
-    version='1.1.1',
+    version='1.1.2',
     author='Kolin Lu',
     author_email='kolinlu@google.com',
     description='A Python wrapper for UiAutomator based on Mobly Snippet Lib.',
