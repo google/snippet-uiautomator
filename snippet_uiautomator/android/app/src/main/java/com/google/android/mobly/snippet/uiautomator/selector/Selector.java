@@ -119,7 +119,7 @@ public class Selector {
         uiObject2List = baseUiObject2.findObjects(bySelector);
         if (selector.has("index")) {
           try {
-            int index = selector.getInt("index");
+            final int index = selector.getInt("index");
             if (index >= 0 && index < uiObject2List.size()) {
               uiObject2List = Collections.singletonList(uiObject2List.get(index));
             } else {
