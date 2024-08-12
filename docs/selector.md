@@ -86,10 +86,20 @@ itself.
 
 *   Child
 
-    Find the child directly under present Selector.
+    Find the child under present Selector.
 
     ```python
     ad.ui(...).child(...)
+    ```
+
+    > [!TIP]
+    > The child selector now supports index search, and it's recommended to pair
+    > it with depth search to pinpoint the specific child element you're looking
+    > for.
+
+    ```python
+    # Find the second object directly under present Selector.
+    ad.ui(...).child(depth=1, index=2)
     ```
 
 *   Parent

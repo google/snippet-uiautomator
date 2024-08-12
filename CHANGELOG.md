@@ -2,6 +2,9 @@
 
 ## 1.1.2:
 * Support ancestor search in Selector
+* Remove ineffectiveness Configurator settings
+* Support gesture margin for default Scroll
+* Support index search in child Selector
 
 ## 1.1.1:
 * Migrate -jre flavor of Guava to -android flavor
