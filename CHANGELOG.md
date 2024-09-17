@@ -1,5 +1,8 @@
 # Snippet UiAutomator Release History
 
+## 1.1.3:
+* Support Direct Boot mode
+
 ## 1.1.2:
 * Support ancestor search in Selector
 * Remove ineffectiveness Configurator settings
