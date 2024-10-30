@@ -17,6 +17,8 @@
 package com.google.android.mobly.snippet.uiautomator;
 
 import android.os.SystemClock;
+import androidx.test.uiautomator.StaleObjectException;
+import com.google.android.mobly.snippet.util.Log;
 import java.util.function.Supplier;
 
 /** Utils for operating UiAutomator. */
@@ -24,16 +26,18 @@ final class Utils {
   private static final long DEFAULT_CPU_SLEEP_MS = 100L;
 
   public static boolean waitUntilTrue(Supplier<Boolean> supplier, long timeoutInMillis) {
-    long startTime = SystemClock.uptimeMillis();
-    boolean result = supplier.get();
-    for (long elapsedTime = 0; !result; elapsedTime = SystemClock.uptimeMillis() - startTime) {
-      if (elapsedTime >= timeoutInMillis) {
-        break;
+    long endTime = SystemClock.uptimeMillis() + timeoutInMillis;
+    while (SystemClock.uptimeMillis() < endTime) {
+      try {
+        if (supplier.get()) {
+          return true;
+        }
+      } catch (StaleObjectException e) {
+        Log.e("UI has been updated since the last retrieval, retrying...", e);
       }
       SystemClock.sleep(DEFAULT_CPU_SLEEP_MS);
-      result = supplier.get();
     }
-    return result;
+    return false;
   }
 
   private Utils() {}
