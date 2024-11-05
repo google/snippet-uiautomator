@@ -18,6 +18,7 @@ package com.google.android.mobly.snippet.uiautomator;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
+import android.graphics.Point;
 import android.os.RemoteException;
 import androidx.test.uiautomator.UiDevice;
 import com.google.android.mobly.snippet.Snippet;
@@ -36,6 +37,7 @@ import java.io.OutputStream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * UiDevice snippet class.
@@ -255,6 +257,16 @@ public class UiDeviceSnippet implements Snippet {
   @Rpc(description = "Performs a swipe from one coordinate to another.")
   public boolean swipe(int startX, int startY, int endX, int endY, int steps) {
     return uiDevice.swipe(startX, startY, endX, endY, steps);
+  }
+
+  @Rpc(description = "Performs a swipe between points in the Point array.")
+  public boolean swipePoints(JSONArray pointArray, int segmentSteps) throws JSONException {
+    Point[] segments = new Point[pointArray.length()];
+    for (int i = 0; i < pointArray.length(); i++) {
+      JSONObject jsonObject = pointArray.getJSONObject(i);
+      segments[i] = new Point(jsonObject.getInt("x"), jsonObject.getInt("y"));
+    }
+    return uiDevice.swipe(segments, segmentSteps);
   }
 
   @Rpc(

@@ -52,6 +52,10 @@ class Point:
   x: int
   y: int
 
+  def to_dict(self) -> dict[str, int]:
+    """Returns the dictionary representation of the Point object."""
+    return {'x': self.x, 'y': self.y}
+
 
 @enum.unique
 class Direction(enum.Enum):

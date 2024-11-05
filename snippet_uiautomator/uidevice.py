@@ -322,7 +322,15 @@ class UiDevice:
     """
     return self._ui.drag(sx, sy, ex, ey, steps)
 
-  def swipe(self, sx: int, sy: int, ex: int, ey: int, steps: int = 100) -> bool:
+  def swipe(
+      self,
+      sx: int | None = None,
+      sy: int | None = None,
+      ex: int | None = None,
+      ey: int | None = None,
+      steps: int = 100,
+      points: Sequence[constants.Point] | None = None,
+  ) -> bool:
     """Performs a swipe from one coordinate to another.
 
     Args:
@@ -333,11 +341,24 @@ class UiDevice:
       steps: The number of steps for the swipe action. Each step execution is
         throttled to 5 milliseconds, so for 100 steps, the swipe will take
         around 0.5 seconds to complete.
+      points: The points to swipe through.
 
     Returns:
       True if operation succeeds, False otherwise.
     """
-    return self._ui.swipe(sx, sy, ex, ey, steps)
+    coordinates = (sx, sy, ex, ey)
+    if all(coordinate is not None for coordinate in coordinates):
+      return self._ui.swipe(sx, sy, ex, ey, steps)
+    elif (
+        all(coordinate is None for coordinate in coordinates)
+        and points is not None
+    ):
+      return self._ui.swipePoints([point.to_dict() for point in points], steps)
+    else:
+      raise AttributeError(
+          f"{self._device} 'swipe' method requires either 'coordinates' or"
+          " 'points' argument",
+      )
 
   def sleep(self) -> bool:
     """Simulates pressing the power button if the screen is ON."""

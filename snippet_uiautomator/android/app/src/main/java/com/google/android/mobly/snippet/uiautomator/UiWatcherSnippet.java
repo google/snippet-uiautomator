@@ -78,6 +78,19 @@ public class UiWatcherSnippet implements Snippet {
   }
 
   @Rpc(description = "Registers a UiWatcher to run automatically when expected condition happened.")
+  public void registerWatcherForClickCoordinate(String name, Selector condition, int x, int y) {
+    uiDevice.registerWatcher(
+        name,
+        () -> {
+          if (condition.toUiObject2NoWait() == null) {
+            return false;
+          }
+          return uiDevice.click(x, y);
+        });
+    watchers.add(name);
+  }
+
+  @Rpc(description = "Registers a UiWatcher to run automatically when expected condition happened.")
   public void registerWatcherForKeycodes(String name, Selector condition, Integer[] keyCodes) {
     uiDevice.registerWatcher(
         name,

@@ -25,6 +25,12 @@ ad.ui.watcher('ITSELF').when(text='Something Pop Up').click()
 ad.ui.watcher('OTHER').when(text='Something Pop Up').click(text='Click Me')
 ```
 
+#### Click on coordinates
+
+```python
+ad.ui.watcher('COORDINATES').when(text='Something Pop Up').click(x=50, y=100)
+```
+
 #### Press key code
 
 ```python
