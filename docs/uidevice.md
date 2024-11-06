@@ -80,6 +80,8 @@ True
 
 ### Swipe
 
+Performs a swipe from one coordinate to another.
+
 ```python
 # Swipes from point (0, 0) to point (50, 100).
 >>> ad.ui.swipe(sx=0, sy=0, ex=50, ey=100)
@@ -87,6 +89,28 @@ True
 
 # Defines the number of steps for this gesture. The same as "drag" action.
 >>> ad.ui.swipe(sx=0, sy=0, ex=50, ey=100, steps=100)
+True
+```
+
+Performs a swipe between points in the Point array, see
+[UiDevice#swipe(android.graphics.Point[],int)](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice#swipe\(android.graphics.Point[],int\))
+for more details.
+
+```python
+# Define a Point array.
+>>> from snippet_uiautomator import constants
+>>> _POINTS_FOR_SWIPE = (
+>>>     constants.Point(x=0, y=0),
+>>>     constants.Point(x=250, y=250),
+>>>     constants.Point(x=500, y=500),
+>>> )
+
+# Swipes between points.
+>>> ad.ui.swipe(points=_POINTS_FOR_SWIPE)
+True
+
+# Defines the number of steps for this gesture.
+>>> ad.ui.swipe(points=_POINTS_FOR_SWIPE, steps=100)
 True
 ```
 
