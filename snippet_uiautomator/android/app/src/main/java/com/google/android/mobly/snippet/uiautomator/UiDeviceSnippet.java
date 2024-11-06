@@ -261,9 +261,9 @@ public class UiDeviceSnippet implements Snippet {
 
   @Rpc(description = "Performs a swipe between points in the Point array.")
   public boolean swipePoints(JSONArray pointArray, int segmentSteps) throws JSONException {
-    Point[] segments = new Point[pointArray.length()];
+    final Point[] segments = new Point[pointArray.length()];
     for (int i = 0; i < pointArray.length(); i++) {
-      JSONObject jsonObject = pointArray.getJSONObject(i);
+      final JSONObject jsonObject = pointArray.getJSONObject(i);
       segments[i] = new Point(jsonObject.getInt("x"), jsonObject.getInt("y"));
     }
     return uiDevice.swipe(segments, segmentSteps);

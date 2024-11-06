@@ -77,7 +77,10 @@ public class UiWatcherSnippet implements Snippet {
     watchers.add(name);
   }
 
-  @Rpc(description = "Registers a UiWatcher to run automatically when expected condition happened.")
+  @Rpc(
+      description =
+          "Registers a UiWatcher to click at specified coordinate when expected condition"
+              + " happened.")
   public void registerWatcherForClickCoordinate(String name, Selector condition, int x, int y) {
     uiDevice.registerWatcher(
         name,

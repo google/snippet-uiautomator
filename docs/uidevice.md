@@ -92,7 +92,9 @@ True
 True
 ```
 
-Performs a swipe between points in the Point array.
+Performs a swipe between points in the Point array, see
+[UiDevice#swipe(android.graphics.Point[],int)](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice#swipe\(android.graphics.Point[],int\))
+for more details.
 
 ```python
 # Define a Point array.
@@ -111,8 +113,6 @@ True
 >>> ad.ui.swipe(points=_POINTS_FOR_SWIPE, steps=100)
 True
 ```
-
-
 
 ### KeyEvent Action
 
