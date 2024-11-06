@@ -33,9 +33,14 @@ TimeUnit = Union[float, int, datetime.timedelta]
 
 def covert_to_millisecond(timeout: TimeUnit) -> int:
   """Converts a time unit object to an integer in milliseconds."""
-  if isinstance(timeout, datetime.timedelta):
-    return int(timeout.total_seconds() * 1_000)
-  return int(timeout)
+  timeout_ms = (
+      int(timeout.total_seconds() * 1_000)
+      if isinstance(timeout, datetime.timedelta)
+      else int(timeout)
+  )
+  if timeout_ms <= 0:
+    raise ValueError('Timeout must be greater than 0 second')
+  return timeout_ms
 
 
 def get_latest_logcat_timestamp(ad: android_device.AndroidDevice) -> str:
