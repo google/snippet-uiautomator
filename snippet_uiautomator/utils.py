@@ -33,11 +33,16 @@ TimeUnit = Union[float, int, datetime.timedelta]
 
 def covert_to_millisecond(timeout: TimeUnit) -> int:
   """Converts a time unit object to an integer in milliseconds."""
-  timeout_ms = (
-      int(timeout.total_seconds() * 1_000)
-      if isinstance(timeout, datetime.timedelta)
-      else int(timeout)
-  )
+  if isinstance(timeout, datetime.timedelta):
+    timeout_ms = int(timeout.total_seconds() * 1_000)
+  elif isinstance(timeout, (float, int)):
+    timeout_ms = int(timeout)
+  else:
+    raise ValueError(
+        'Timeout must be a float, int or datetime.timedelta, but got'
+        f' {type(timeout)}'
+    )
+
   if timeout_ms <= 0:
     raise ValueError('Timeout must be greater than 0 second')
   return timeout_ms
