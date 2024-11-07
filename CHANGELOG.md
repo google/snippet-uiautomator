@@ -1,6 +1,8 @@
 # Snippet UiAutomator Release History
 
 ## 1.1.3:
+* Fix waitUntilTrue doesn't run when passing small wait time
+* Raise an error when non-positive wait time is set
 * Support clicking on specific coordinate when registering a UiWatcher
 * Support performing a swipe between points in the Point array
 * Handle StaleObjectException raised from waiting for specific object appear/disappear

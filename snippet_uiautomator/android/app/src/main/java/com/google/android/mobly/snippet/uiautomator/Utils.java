@@ -28,7 +28,7 @@ final class Utils {
 
   public static boolean waitUntilTrue(@NonNull Supplier<Boolean> supplier, long timeoutInMillis) {
     final long endTime = SystemClock.uptimeMillis() + timeoutInMillis;
-    while (SystemClock.uptimeMillis() < endTime) {
+    do {
       try {
         if (supplier.get()) {
           return true;
@@ -37,7 +37,7 @@ final class Utils {
         Log.e("UI has been updated since the last retrieval, retrying...", e);
       }
       SystemClock.sleep(DEFAULT_CPU_SLEEP_MS);
-    }
+    } while (SystemClock.uptimeMillis() < endTime);
     return false;
   }
 
