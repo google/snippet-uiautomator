@@ -39,19 +39,34 @@ class _Click:
     self._ui = ui
     self._selector = selector
 
-  def __call__(self, timeout: Optional[utils.TimeUnit] = None) -> bool:
+  def __call__(
+      self,
+      timeout: Optional[utils.TimeUnit] = None,
+      x: Optional[int] = None,
+      y: Optional[int] = None,
+  ) -> bool:
     """Clicks on this object.
 
     Args:
       timeout: The time in milliseconds to click and hold.
+      x: The X coordinate of the point to click (within the visible bounds).
+      y: The Y coordinate of the point to click (within the visible bounds).
 
     Returns:
       True if operation succeeds, False otherwise.
+
+    Raises:
+      errors.ApiError: When given incorrect arguments to this method.
     """
-    if timeout is None:
-      return self._ui.clickObj(self._selector.to_dict())
-    timeout_ms = utils.covert_to_millisecond(timeout)
-    return self._ui.clickObj(self._selector.to_dict(), timeout_ms)
+    timeout_ms = (
+        None if timeout is None else utils.covert_to_millisecond(timeout)
+    )
+    if x is not None and y is not None:
+      return self._ui.clickObjPoint(self._selector.to_dict(), x, y, timeout_ms)
+    elif x is None and y is None:
+      return self._ui.clickObj(self._selector.to_dict(), timeout_ms)
+    else:
+      raise errors.ApiError('Must provide both x and y to click on point')
 
   def bottomright(self) -> bool:
     """Clicks the lower right corner of this object."""
