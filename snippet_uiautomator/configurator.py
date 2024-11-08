@@ -110,7 +110,7 @@ class Configurator:
 
     if self.timeout.wait_for_idle is not None:
       config['waitForIdleTimeout'] = utils.covert_to_millisecond(
-          self.timeout.wait_for_idle
+          self.timeout.wait_for_idle, ignore_error=True
       )
 
     return config

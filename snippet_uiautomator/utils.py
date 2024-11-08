@@ -31,7 +31,7 @@ REGEX_UIA_SERVICE_ALREADY_REGISTERED = (
 TimeUnit = Union[float, int, datetime.timedelta]
 
 
-def covert_to_millisecond(timeout: TimeUnit) -> int:
+def covert_to_millisecond(timeout: TimeUnit, ignore_error: bool = False) -> int:
   """Converts a time unit object to an integer in milliseconds."""
   if isinstance(timeout, datetime.timedelta):
     timeout_ms = int(timeout.total_seconds() * 1_000)
@@ -43,7 +43,7 @@ def covert_to_millisecond(timeout: TimeUnit) -> int:
         f' {type(timeout)}'
     )
 
-  if timeout_ms <= 0:
+  if timeout_ms <= 0 and not ignore_error:
     raise ValueError('Timeout must be greater than 0 second')
   return timeout_ms
 
