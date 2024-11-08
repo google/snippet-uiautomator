@@ -20,6 +20,7 @@ https://developer.android.com/reference/androidx/test/uiautomator/UiObject2
 from __future__ import annotations
 
 from typing import Mapping, Optional, Sequence, Union
+import warnings
 
 from mobly.controllers.android_device_lib import snippet_client_v2
 from snippet_uiautomator import byselector
@@ -41,6 +42,7 @@ class _Click:
 
   def __call__(
       self,
+      duration: Optional[utils.TimeUnit] = None,
       timeout: Optional[utils.TimeUnit] = None,
       x: Optional[int] = None,
       y: Optional[int] = None,
@@ -48,7 +50,8 @@ class _Click:
     """Clicks on this object.
 
     Args:
-      timeout: The time in milliseconds to click and hold.
+      duration: The time in milliseconds to click and hold.
+      timeout: (Deprecated) The time in milliseconds to click and hold.
       x: The X coordinate of the point to click (within the visible bounds).
       y: The Y coordinate of the point to click (within the visible bounds).
 
@@ -58,13 +61,21 @@ class _Click:
     Raises:
       errors.ApiError: When given incorrect arguments to this method.
     """
-    timeout_ms = (
-        None if timeout is None else utils.covert_to_millisecond(timeout)
+    if timeout is not None:
+      warnings.warn(
+          "The 'timeout' argument is deprecated, use 'duration' instead.",
+          DeprecationWarning,
+          stacklevel=2,
+      )
+      duration = timeout  # Maintain backward compatibility
+
+    duration_ms = (
+        None if duration is None else utils.covert_to_millisecond(duration)
     )
     if x is not None and y is not None:
-      return self._ui.clickObjPoint(self._selector.to_dict(), x, y, timeout_ms)
+      return self._ui.clickObjPoint(self._selector.to_dict(), x, y, duration_ms)
     elif x is None and y is None:
-      return self._ui.clickObj(self._selector.to_dict(), timeout_ms)
+      return self._ui.clickObj(self._selector.to_dict(), duration_ms)
     else:
       raise errors.ApiError('Must provide both x and y to click on point')
 

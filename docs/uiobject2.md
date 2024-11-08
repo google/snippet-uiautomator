@@ -195,7 +195,7 @@ for more details.
 
 # Clicks then releases after 10 seconds on the center point.
 >>> click_then_hold_time = datetime.timedelta(seconds=10)
->>> example.click(x=example_center.x, y=example_center.y, timeout=click_then_hold_time)
+>>> example.click(x=example_center.x, y=example_center.y, duration=click_then_hold_time)
 ```
 
 ### Drag
