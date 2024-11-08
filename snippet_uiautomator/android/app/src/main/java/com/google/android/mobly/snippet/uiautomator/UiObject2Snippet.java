@@ -66,6 +66,14 @@ public class UiObject2Snippet implements Snippet {
         selector, uiObject2 -> uiObject2.clickAndWait(Until.newWindow(), durationInMillis));
   }
 
+  @Rpc(description = "Clicks on a point within this object's visible bounds.")
+  public boolean clickObjPoint(Selector selector, int x, int y, @RpcOptional Long durationInMillis)
+      throws SelectorException {
+    return durationInMillis == null
+        ? operate(selector, uiObject2 -> uiObject2.click(new Point(x, y)))
+        : operate(selector, uiObject2 -> uiObject2.click(new Point(x, y), durationInMillis));
+  }
+
   @Rpc(description = "Drags this object in pixels per second to the specified location.")
   public boolean dragObj(Selector selector, int x, int y, @RpcOptional Integer speed)
       throws SelectorException {

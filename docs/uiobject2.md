@@ -180,6 +180,24 @@ True
 True
 ```
 
+#### Click on point
+
+Clicks on a point within this object's visible bounds, see
+[UiObject2#click(android.graphics.Point,long)](https://developer.android.com/reference/androidx/test/uiautomator/UiObject2#click\(android.graphics.Point,long\))
+for more details.
+
+```python
+>>> example = ad.ui(text="Settings")
+>>> example_center = example.visible_center
+
+# Clicks on the center point.
+>>> example.click(x=example_center.x, y=example_center.y)
+
+# Clicks then releases after 10 seconds on the center point.
+>>> click_then_hold_time = datetime.timedelta(seconds=10)
+>>> example.click(x=example_center.x, y=example_center.y, duration=click_then_hold_time)
+```
+
 ### Drag
 
 Drag to specific point
