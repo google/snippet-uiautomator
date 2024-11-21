@@ -1,6 +1,7 @@
 # Snippet UiAutomator Release History
 
 ## 1.1.3:
+* Support scrolling to a complex-search object
 * Support clicking on a point within the object's visible bounds
 * Fix waitUntilTrue doesn't run when passing small wait time
 * Raise an error when non-positive wait time is set

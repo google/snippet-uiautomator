@@ -314,6 +314,7 @@ class _Scroll:
         self,
         percent: Optional[int] = None,
         speed: Optional[int] = None,
+        target: Optional[UiObject2] = None,
         **kwargs,
     ) -> bool:
       """Scrolls to specific position or until target object is visible.
@@ -322,6 +323,7 @@ class _Scroll:
         percent: The length of the swipe or the distance to scroll as a
           percentage of this object's size. This value must between 0 and 100.
         speed: The speed at which to perform this gesture in pixels per second.
+        target: The target object to scroll to.
         **kwargs: The search criteria for matching objects.
 
       Returns:
@@ -330,22 +332,7 @@ class _Scroll:
       Raises:
         errors.ApiError: When given incorrect arguments to this method.
       """
-      if percent is None and speed is None:
-        if kwargs:
-          return self._ui.scrollUntil(
-              self._selector.to_dict(),
-              kwargs,
-              self._direction,
-              self._margin,
-              self._percent,
-          )
-        return self._ui.scrollUntilFinished(
-            self._selector.to_dict(),
-            self._direction,
-            self._margin,
-            self._percent,
-        )
-      elif percent is not None and not kwargs:
+      if percent is not None and target is None and not kwargs:
         return self._ui.scroll(
             self._selector.to_dict(),
             self._direction,
@@ -354,11 +341,34 @@ class _Scroll:
             self._margin,
             self._percent,
         )
-      else:
-        raise errors.ApiError(
-            'Scroll by percentage and scroll by condition cannot be mixed',
-            self._device,
-        )
+      if percent is None and speed is None:
+        if target is None and kwargs:
+          return self._ui.scrollUntil(
+              self._selector.to_dict(),
+              kwargs,
+              self._direction,
+              self._margin,
+              self._percent,
+          )
+        elif target is None and not kwargs:
+          return self._ui.scrollUntilFinished(
+              self._selector.to_dict(),
+              self._direction,
+              self._margin,
+              self._percent,
+          )
+        elif target is not None and not kwargs:
+          return self._ui.scrollUntil(
+              self._selector.to_dict(),
+              target._selector.to_dict(),
+              self._direction,
+              self._margin,
+              self._percent,
+          )
+      raise errors.ApiError(
+          'Scroll by percentage and scroll by condition cannot be mixed',
+          self._device,
+      )
 
     def click(self, **kwargs) -> bool:
       """Scrolls until the target object is visible, then clicks."""

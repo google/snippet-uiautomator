@@ -293,6 +293,11 @@ True
 # Scrolls right until find the target object or reach the end.
 >>> ad.ui(scrollable=True).scroll.right(clazz='android.widget.TextView', text='Location')
 True
+
+# Scrolls up until find the target object or reach the end.
+target = ad.ui(text='Example').right(res='android:id/switch_widget')
+>>> ad.ui(scrollable=True).scroll.right(target=target)
+True
 ```
 
 #### Scroll to Specific Object, Then Click
