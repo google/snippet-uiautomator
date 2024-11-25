@@ -165,38 +165,25 @@ class _Drag:
       )
 
 
-class _Gesture:
+class _Swipe:
   """Performs a gesture in a specific direction on a specific UiObject2."""
 
   def __init__(
       self,
       ui: snippet_client_v2.SnippetClientV2,
       selector: byselector.BySelector,
-      action: str,
   ) -> None:
     self._ui = ui
     self._device = self._ui._device  # pylint: disable=protected-access
     self._selector = selector
-    self._action = action
 
   def _perform_gesture(
       self, direction: str, percent: int, speed: Optional[int]
   ) -> bool:
     """Performs a gesture on this object."""
-    if self._action == 'fling':
-      if percent != 0:
-        raise errors.ApiError(
-            'fling gesture does not support changing the percent', self._device
-        )
-      return self._ui.fling(self._selector.to_dict(), direction, speed)
-    elif self._action == 'swipe':
-      return self._ui.swipeObj(
-          self._selector.to_dict(), direction, percent, speed
-      )
-    else:
-      raise errors.ApiError(
-          f'Unknown gesture action: {repr(self._action)}', self._device
-      )
+    return self._ui.swipeObj(
+        self._selector.to_dict(), direction, percent, speed
+    )
 
   def down(self, percent: int = 0, speed: Optional[int] = None) -> bool:
     """Performs a gesture on this object with direction DOWN.
@@ -249,6 +236,103 @@ class _Gesture:
       True if operation succeeds, False otherwise.
     """
     return self._perform_gesture('UP', percent, speed)
+
+
+class _Fling:
+  """Performs a fling in a specific direction on a specific UiObject2."""
+
+  def __init__(
+      self,
+      ui: snippet_client_v2.SnippetClientV2,
+      selector: byselector.BySelector,
+  ) -> None:
+    self._ui = ui
+    self._device = self._ui._device  # pylint: disable=protected-access
+    self._selector = selector
+
+  def _perform_fling(
+      self,
+      direction: str,
+      speed: Optional[int],
+      margin: Optional[int],
+      percent: Optional[int],
+  ) -> bool:
+    """Performs a fling on this object."""
+    return self._ui.fling(
+        self._selector.to_dict(), direction, speed, margin, percent
+    )
+
+  def down(
+      self,
+      speed: Optional[int] = None,
+      margin: Optional[int] = None,
+      percent: Optional[int] = None,
+  ) -> bool:
+    """Performs a fling on this object with direction DOWN.
+
+    Args:
+      speed: The speed at which to perform this fling in pixels per second.
+      margin: The margin to fling in pixels.
+      percent: The pecentage of the object's size to set as the margin.
+
+    Returns:
+      True if operation succeeds, False otherwise.
+    """
+    return self._perform_fling('DOWN', speed, margin, percent)
+
+  def left(
+      self,
+      speed: Optional[int] = None,
+      margin: Optional[int] = None,
+      percent: Optional[int] = None,
+  ) -> bool:
+    """Performs a fling on this object with direction LEFT.
+
+    Args:
+      speed: The speed at which to perform this fling in pixels per second.
+      margin: The margin to fling in pixels.
+      percent: The pecentage of the object's size to set as the margin.
+
+    Returns:
+      True if operation succeeds, False otherwise.
+    """
+    return self._perform_fling('LEFT', speed, margin, percent)
+
+  def right(
+      self,
+      speed: Optional[int] = None,
+      margin: Optional[int] = None,
+      percent: Optional[int] = None,
+  ) -> bool:
+    """Performs a fling on this object with direction RIGHT.
+
+    Args:
+      speed: The speed at which to perform this fling in pixels per second.
+      margin: The margin to fling in pixels.
+      percent: The pecentage of the object's size to set as the margin.
+
+    Returns:
+      True if operation succeeds, False otherwise.
+    """
+    return self._perform_fling('RIGHT', speed, margin, percent)
+
+  def up(
+      self,
+      speed: Optional[int] = None,
+      margin: Optional[int] = None,
+      percent: Optional[int] = None,
+  ) -> bool:
+    """Performs a fling on this object with direction UP.
+
+    Args:
+      speed: The speed at which to perform this fling in pixels per second.
+      margin: The margin to fling in pixels.
+      percent: The pecentage of the object's size to set as the margin.
+
+    Returns:
+      True if operation succeeds, False otherwise.
+    """
+    return self._perform_fling('UP', speed, margin, percent)
 
 
 class _Pinch:
@@ -621,9 +705,9 @@ class UiObject2:
     return is_exists
 
   @property
-  def fling(self) -> _Gesture:
+  def fling(self) -> _Fling:
     """Performs a fling gesture on this object."""
-    return _Gesture(self._ui, self._selector, 'fling')
+    return _Fling(self._ui, self._selector)
 
   @property
   def info(self) -> Mapping[str, Union[bool, int, str, Mapping[str, int]]]:
@@ -641,9 +725,9 @@ class UiObject2:
     return _Scroll(self._ui, self._selector)
 
   @property
-  def swipe(self) -> _Gesture:
+  def swipe(self) -> _Swipe:
     """Performs a swipe gesture on this object."""
-    return _Gesture(self._ui, self._selector, 'swipe')
+    return _Swipe(self._ui, self._selector)
 
   @property
   def wait(self) -> _Wait:
