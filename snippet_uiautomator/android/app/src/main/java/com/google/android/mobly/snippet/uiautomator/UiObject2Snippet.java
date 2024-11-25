@@ -133,12 +133,32 @@ public class UiObject2Snippet implements Snippet {
   }
 
   @Rpc(description = "Performs a fling gesture in pixels per second on this object.")
-  public boolean fling(Selector selector, String directionStr, @RpcOptional Integer speed)
+  public boolean fling(
+      Selector selector,
+      String directionStr,
+      @RpcOptional Integer speed,
+      @RpcOptional Integer gestureMargin,
+      @RpcOptional Integer gestureMarginPercent)
       throws SelectorException {
-    Direction direction = Direction.valueOf(directionStr);
-    return speed == null
-        ? operate(selector, uiObject2 -> uiObject2.fling(direction))
-        : operate(selector, uiObject2 -> uiObject2.fling(direction, speed));
+    final Direction direction = Direction.valueOf(directionStr);
+    final UiObject2 uiObject2 = selector.toUiObject2();
+    if (uiObject2 == null) {
+      return false;
+    }
+
+    if (gestureMargin != null) {
+      Log.i("Setting gesture margin to " + gestureMargin);
+      uiObject2.setGestureMargin(gestureMargin);
+    } else if (gestureMarginPercent != null) {
+      Log.i("Setting gesture margin percentage to " + gestureMarginPercent);
+      uiObject2.setGestureMarginPercentage(gestureMarginPercent / 100f);
+    }
+
+    try {
+      return speed == null ? uiObject2.fling(direction) : uiObject2.fling(direction, speed);
+    } finally {
+      uiObject2.recycle();
+    }
   }
 
   @Rpc(description = "Returns the package name of the app that this object belongs to.")
