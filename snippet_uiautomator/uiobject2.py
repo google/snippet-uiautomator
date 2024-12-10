@@ -177,7 +177,7 @@ class _Swipe:
     self._device = self._ui._device  # pylint: disable=protected-access
     self._selector = selector
 
-  def _perform_gesture(
+  def _perform_swipe(
       self, direction: str, percent: int, speed: Optional[int]
   ) -> bool:
     """Performs a gesture on this object."""
@@ -196,7 +196,7 @@ class _Swipe:
     Returns:
       True if operation succeeds, False otherwise.
     """
-    return self._perform_gesture('DOWN', percent, speed)
+    return self._perform_swipe('DOWN', percent, speed)
 
   def left(self, percent: int = 0, speed: Optional[int] = None) -> bool:
     """Performs a gesture on this object with direction LEFT.
@@ -209,7 +209,7 @@ class _Swipe:
     Returns:
       True if operation succeeds, False otherwise.
     """
-    return self._perform_gesture('LEFT', percent, speed)
+    return self._perform_swipe('LEFT', percent, speed)
 
   def right(self, percent: int = 0, speed: Optional[int] = None) -> bool:
     """Performs a gesture on this object with direction RIGHT.
@@ -222,7 +222,7 @@ class _Swipe:
     Returns:
       True if operation succeeds, False otherwise.
     """
-    return self._perform_gesture('RIGHT', percent, speed)
+    return self._perform_swipe('RIGHT', percent, speed)
 
   def up(self, percent: int = 0, speed: Optional[int] = None) -> bool:
     """Performs a gesture on this object with direction UP.
@@ -235,7 +235,7 @@ class _Swipe:
     Returns:
       True if operation succeeds, False otherwise.
     """
-    return self._perform_gesture('UP', percent, speed)
+    return self._perform_swipe('UP', percent, speed)
 
 
 class _Fling:
