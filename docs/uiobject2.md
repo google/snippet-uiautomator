@@ -227,25 +227,49 @@ True
 For the difference between `fling` and `swipe`, please refer to
 [Material Design](https://m1.material.io/patterns/gestures.html#gestures-drag-swipe-or-fling-details).
 
-These methods support 4 directions:
+These methods support:
 
--   down
--   left
--   right
--   up
+-   Setting margin of the action, details please refer to
+    [UiObject2#setGestureMargin](https://developer.android.com/reference/kotlin/androidx/test/uiautomator/UiObject2#setGestureMargin\(int\))
+
+    -   `margin` in pixels
+
+    -   `percent` in percentage of the object's size
+
+-   4 directions
+
+    -   `down`
+
+    -   `left`
+
+    -   `right`
+
+    -   `up`
 
 ```python
 # Defines the speed that perform this gesture in pixels per second.
 >>> ad.ui(text='Example').fling.down(speed=100)
 True
 
+# Sets the percentage of margins before fling.
+>>> ad.ui(text='Example').fling(percent=0.1).down()
+True
+
 # Defines the length of the swipe as a percentage of this object's size.
 >>> ad.ui(text='Example').swipe.right(percent=50, speed=100)
 True
+
+# Sets the margins in pixels before swipe.
+>>> ad.ui(text='Example').swipe(margin=10).down()
+True
+
+# Sets both the margins in pixels and speed.
+>>> ad.ui(text='Example').swipe(margin=10).down(speed=100)
+True
 ```
 
-> Important: Fling action does not support `percent` as parameters, please refer
-> to
+> Important: Fling action does not support `percent` as direction parameters,
+> please refer to
 > [UiObject2#fling](https://developer.android.com/reference/androidx/test/uiautomator/UiObject2#fling).
 
 ### Scroll
@@ -317,6 +341,21 @@ True
 
 # Defines the speed at which to perform this gesture in pixels per second.
 >>> ad.ui(text='Example').pinch.open(percent=100, speed=100)
+True
+```
+
+#### Scroll with Specific Margin
+
+If the scroll gesture starts too close to the edge and the scrolling action
+doesn't perform correctly, try setting a margin.
+
+```python
+# Sets the margins in pixels before scrolling.
+>>> ad.ui(text='Example').scroll(margin=10).down()
+True
+
+# Sets the percentage of margins before scrolling.
+>>> ad.ui(text='Example').scroll(percent=0.1).down()
 True
 ```
 
