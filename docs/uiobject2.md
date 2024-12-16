@@ -344,6 +344,21 @@ True
 True
 ```
 
+#### Scroll with Specific Margin
+
+If the scroll gesture starts too close to the edge and the scrolling action
+doesn't perform correctly, try setting a margin.
+
+```python
+# Sets the margins in pixels before scrolling.
+>>> ad.ui(text='Example').scroll(margin=10).down()
+True
+
+# Sets the percentage of margins before scrolling.
+>>> ad.ui(text='Example').scroll(percent=0.1).down()
+True
+```
+
 ### Wait
 
 #### Until Appear
