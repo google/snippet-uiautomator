@@ -133,12 +133,29 @@ public class UiObject2Snippet implements Snippet {
   }
 
   @Rpc(description = "Performs a fling gesture in pixels per second on this object.")
-  public boolean fling(Selector selector, String directionStr, @RpcOptional Integer speed)
+  public boolean fling(
+      Selector selector,
+      String directionStr,
+      @RpcOptional Integer speed,
+      @RpcOptional Integer gestureMargin,
+      @RpcOptional Integer gestureMarginPercent)
       throws SelectorException {
-    Direction direction = Direction.valueOf(directionStr);
-    return speed == null
-        ? operate(selector, uiObject2 -> uiObject2.fling(direction))
-        : operate(selector, uiObject2 -> uiObject2.fling(direction, speed));
+    final UiObject2 uiObject2 = selector.toUiObject2();
+    if (uiObject2 == null) {
+      return false;
+    }
+    setGestureMargin(uiObject2, gestureMargin, gestureMarginPercent);
+    final Direction direction = Direction.valueOf(directionStr);
+    try {
+      if (speed == null) {
+        uiObject2.fling(direction);
+      } else {
+        uiObject2.fling(direction, speed);
+      }
+      return true; // Fling has a known bug where it returns false even if it succeeds.
+    } finally {
+      uiObject2.recycle();
+    }
   }
 
   @Rpc(description = "Returns the package name of the app that this object belongs to.")
@@ -317,24 +334,16 @@ public class UiObject2Snippet implements Snippet {
       @RpcOptional Integer gestureMargin,
       @RpcOptional Integer gestureMarginPercent)
       throws SelectorException {
-    final Direction direction = Direction.valueOf(directionStr);
     final UiObject2 uiObject2 = selector.toUiObject2();
     if (uiObject2 == null) {
       return false;
     }
-    if (gestureMargin != null) {
-      Log.i("Setting gesture margin to " + gestureMargin);
-      uiObject2.setGestureMargin(gestureMargin);
-    } else if (gestureMarginPercent != null) {
-      Log.i("Setting gesture margin percentage to " + gestureMarginPercent);
-      uiObject2.setGestureMarginPercentage(gestureMarginPercent / 100f);
-    }
+    setGestureMargin(uiObject2, gestureMargin, gestureMarginPercent);
+    final Direction direction = Direction.valueOf(directionStr);
     try {
-      if (speed == null) {
-        return uiObject2.scroll(direction, percent / 100f);
-      } else {
-        return uiObject2.scroll(direction, percent / 100f, speed);
-      }
+      return speed == null
+          ? uiObject2.scroll(direction, percent / 100f)
+          : uiObject2.scroll(direction, percent / 100f, speed);
     } finally {
       uiObject2.recycle();
     }
@@ -344,19 +353,15 @@ public class UiObject2Snippet implements Snippet {
   public boolean scrollUntilFinished(
       Selector selector,
       String directionStr,
-      @RpcOptional Integer margin,
-      @RpcOptional Integer percent)
+      @RpcOptional Integer gestureMargin,
+      @RpcOptional Integer gestureMarginPercent)
       throws SelectorException {
     Direction direction = Direction.valueOf(directionStr);
     UiObject2 uiObject2 = selector.toUiObject2();
     if (uiObject2 == null) {
       return false;
     }
-    if (margin != null) {
-      uiObject2.setGestureMargin(margin);
-    } else if (percent != null) {
-      uiObject2.setGestureMarginPercentage(percent / 100f);
-    }
+    setGestureMargin(uiObject2, gestureMargin, gestureMarginPercent);
     try {
       return uiObject2.scrollUntil(direction, Until.scrollFinished(direction));
     } catch (NullPointerException e) {
@@ -375,18 +380,14 @@ public class UiObject2Snippet implements Snippet {
       Selector selector,
       Selector childSelector,
       String directionStr,
-      @RpcOptional Integer margin,
-      @RpcOptional Integer percent)
+      @RpcOptional Integer gestureMargin,
+      @RpcOptional Integer gestureMarginPercent)
       throws SelectorException {
     UiObject2 uiObject2 = selector.toUiObject2();
     if (uiObject2 == null) {
       return false;
     }
-    if (margin != null) {
-      uiObject2.setGestureMargin(margin);
-    } else if (percent != null) {
-      uiObject2.setGestureMarginPercentage(percent / 100f);
-    }
+    setGestureMargin(uiObject2, gestureMargin, gestureMarginPercent);
     BySelector childBySelector = childSelector.toBySelector();
     Direction direction = Direction.valueOf(directionStr);
     try {
@@ -404,12 +405,29 @@ public class UiObject2Snippet implements Snippet {
 
   @Rpc(description = "Performs a swipe gesture in pixels per second on this object.")
   public boolean swipeObj(
-      Selector selector, String directionStr, int percent, @RpcOptional Integer speed)
+      Selector selector,
+      String directionStr,
+      int percent,
+      @RpcOptional Integer speed,
+      @RpcOptional Integer gestureMargin,
+      @RpcOptional Integer gestureMarginPercent)
       throws SelectorException {
-    Direction direction = Direction.valueOf(directionStr);
-    return speed == null
-        ? operate(selector, uiObject2 -> uiObject2.swipe(direction, percent / 100f))
-        : operate(selector, uiObject2 -> uiObject2.swipe(direction, percent / 100f, speed));
+    final UiObject2 uiObject2 = selector.toUiObject2();
+    if (uiObject2 == null) {
+      return false;
+    }
+    setGestureMargin(uiObject2, gestureMargin, gestureMarginPercent);
+    final Direction direction = Direction.valueOf(directionStr);
+    try {
+      if (speed == null) {
+        uiObject2.swipe(direction, percent / 100f);
+      } else {
+        uiObject2.swipe(direction, percent / 100f, speed);
+      }
+      return true;
+    } finally {
+      uiObject2.recycle();
+    }
   }
 
   @Rpc(description = "Waits for given the condition to be met.")
@@ -469,6 +487,22 @@ public class UiObject2Snippet implements Snippet {
 
   private static void recycle(Optional<UiObject2> uiObject2OrEmpty) {
     uiObject2OrEmpty.ifPresent(UiObject2::recycle);
+  }
+
+  private static void setGestureMargin(
+      UiObject2 uiObject2,
+      @RpcOptional Integer gestureMargin,
+      @RpcOptional Integer gestureMarginPercent) {
+    if (gestureMargin != null && gestureMarginPercent != null) {
+      throw new IllegalArgumentException(
+          "Only one of gestureMargin and gestureMarginPercent can be set.");
+    } else if (gestureMargin != null) {
+      Log.i("Setting gesture margin to " + gestureMargin);
+      uiObject2.setGestureMargin(gestureMargin);
+    } else if (gestureMarginPercent != null) {
+      Log.i("Setting gesture margin percentage to " + gestureMarginPercent);
+      uiObject2.setGestureMarginPercentage(gestureMarginPercent / 100f);
+    }
   }
 
   @Override

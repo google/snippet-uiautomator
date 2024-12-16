@@ -19,7 +19,7 @@ https://developer.android.com/reference/androidx/test/uiautomator/UiObject2
 
 from __future__ import annotations
 
-from typing import Mapping, Optional, Sequence, Union
+from typing import Literal, Mapping, Optional, Sequence, Union
 import warnings
 
 from mobly.controllers.android_device_lib import snippet_client_v2
@@ -27,6 +27,10 @@ from snippet_uiautomator import byselector
 from snippet_uiautomator import constants
 from snippet_uiautomator import errors
 from snippet_uiautomator import utils
+
+
+# Since uiobject2 access the private RPC client, disable the warning.
+# pylint: disable=protected-access
 
 
 class _Click:
@@ -118,7 +122,7 @@ class _Drag:
       selector: byselector.BySelector,
   ) -> None:
     self._ui = ui
-    self._device = self._ui._device  # pylint: disable=protected-access
+    self._device = self._ui._device
     self._selector = selector
 
   def __call__(
@@ -166,89 +170,144 @@ class _Drag:
 
 
 class _Gesture:
-  """Performs a gesture in a specific direction on a specific UiObject2."""
+  """Performs swipe or fling gesture in a specific direction on a specific UiObject2."""
+
+  class _To:
+    """Performs swipe or fling gesture from this object in a specific direction."""
+
+    def __init__(
+        self,
+        ui: snippet_client_v2.SnippetClientV2,
+        selector: byselector.BySelector,
+        action: Literal['swipe', 'fling'],
+        direction: str,
+        margin: Optional[int],
+        percent: Optional[int],
+    ) -> None:
+      self._ui = ui
+      self._device = self._ui._device
+      self._selector = selector
+      self._action = action
+      self._direction = direction
+      self._margin = margin
+      self._percent = percent
+
+    def __call__(self, percent: int = 0, speed: Optional[int] = None) -> bool:
+      """Performs swipe or fling gesture on this object with specified direction.
+
+      Args:
+        percent: The length of the swipe or the distance to scroll as a
+          percentage of this object's size. This value must between 0 and 100.
+        speed: The speed at which to perform this gesture in pixels per second.
+
+      Returns:
+        True if operation succeeds, False otherwise.
+      """
+      if self._action == 'fling':
+        if percent != 0:
+          raise errors.ApiError(
+              'fling gesture does not support changing the percent',
+              self._device,
+          )
+        return self._ui.fling(
+            self._selector.to_dict(),
+            self._direction,
+            speed,
+            self._margin,
+            self._percent,
+        )
+      elif self._action == 'swipe':
+        if not (0 <= percent <= 100):
+          raise errors.ApiError(
+              'swipe gesture requires percent to be between 0 and 100',
+              self._device,
+          )
+        return self._ui.swipeObj(
+            self._selector.to_dict(),
+            self._direction,
+            percent,
+            speed,
+            self._margin,
+            self._percent,
+        )
+      else:
+        raise errors.ApiError(
+            f'Unknown gesture action: {self._action}', self._device
+        )
 
   def __init__(
       self,
       ui: snippet_client_v2.SnippetClientV2,
       selector: byselector.BySelector,
-      action: str,
+      action: Literal['swipe', 'fling'],
   ) -> None:
     self._ui = ui
-    self._device = self._ui._device  # pylint: disable=protected-access
+    self._device = self._ui._device
     self._selector = selector
     self._action = action
+    self._margin = None
+    self._percent = None
 
-  def _perform_gesture(
-      self, direction: str, percent: int, speed: Optional[int]
-  ) -> bool:
-    """Performs a gesture on this object."""
-    if self._action == 'fling':
-      if percent != 0:
-        raise errors.ApiError(
-            'fling gesture does not support changing the percent', self._device
-        )
-      return self._ui.fling(self._selector.to_dict(), direction, speed)
-    elif self._action == 'swipe':
-      return self._ui.swipeObj(
-          self._selector.to_dict(), direction, percent, speed
-      )
-    else:
+  def __call__(
+      self, margin: Optional[int] = None, percent: Optional[int] = None
+  ) -> _Gesture:
+    """Sets the margins used for scroll gesture."""
+    if margin is not None and percent is not None:
       raise errors.ApiError(
-          f'Unknown gesture action: {repr(self._action)}', self._device
+          'Pixel-based and percentage-based margin cannot be mixed',
+          self._device,
       )
+    self._margin = margin
+    self._percent = percent
+    return self
 
-  def down(self, percent: int = 0, speed: Optional[int] = None) -> bool:
-    """Performs a gesture on this object with direction DOWN.
+  @property
+  def down(self) -> _Gesture._To:
+    """Performs a gesture on this object with direction DOWN."""
+    return self._To(
+        self._ui,
+        self._selector,
+        self._action,
+        'DOWN',
+        self._margin,
+        self._percent,
+    )
 
-    Args:
-      percent: The length of the swipe or the distance to scroll as a percentage
-        of this object's size. This value must between 0 and 100.
-      speed: The speed at which to perform this gesture in pixels per second.
+  @property
+  def left(self) -> _Gesture._To:
+    """Performs a gesture on this object with direction LEFT."""
+    return self._To(
+        self._ui,
+        self._selector,
+        self._action,
+        'LEFT',
+        self._margin,
+        self._percent,
+    )
 
-    Returns:
-      True if operation succeeds, False otherwise.
-    """
-    return self._perform_gesture('DOWN', percent, speed)
+  @property
+  def right(self) -> _Gesture._To:
+    """Performs a gesture on this object with direction RIGHT."""
+    return self._To(
+        self._ui,
+        self._selector,
+        self._action,
+        'RIGHT',
+        self._margin,
+        self._percent,
+    )
 
-  def left(self, percent: int = 0, speed: Optional[int] = None) -> bool:
-    """Performs a gesture on this object with direction LEFT.
-
-    Args:
-      percent: The length of the swipe or the distance to scroll as a percentage
-        of this object's size. This value must between 0 and 100.
-      speed: The speed at which to perform this gesture in pixels per second.
-
-    Returns:
-      True if operation succeeds, False otherwise.
-    """
-    return self._perform_gesture('LEFT', percent, speed)
-
-  def right(self, percent: int = 0, speed: Optional[int] = None) -> bool:
-    """Performs a gesture on this object with direction RIGHT.
-
-    Args:
-      percent: The length of the swipe or the distance to scroll as a percentage
-        of this object's size. This value must between 0 and 100.
-      speed: The speed at which to perform this gesture in pixels per second.
-
-    Returns:
-      True if operation succeeds, False otherwise.
-    """
-    return self._perform_gesture('RIGHT', percent, speed)
-
-  def up(self, percent: int = 0, speed: Optional[int] = None) -> bool:
-    """Performs a gesture on this object with direction UP.
-
-    Args:
-      percent: The length of the swipe or the distance to scroll as a percentage
-        of this object's size. This value must between 0 and 100.
-      speed: The speed at which to perform this gesture in pixels per second.
-
-    Returns:
-      True if operation succeeds, False otherwise.
-    """
-    return self._perform_gesture('UP', percent, speed)
+  @property
+  def up(self) -> _Gesture._To:
+    """Performs a gesture on this object with direction UP."""
+    return self._To(
+        self._ui,
+        self._selector,
+        self._action,
+        'UP',
+        self._margin,
+        self._percent,
+    )
 
 
 class _Pinch:
@@ -304,7 +363,7 @@ class _Scroll:
         percent: Optional[int],
     ) -> None:
       self._ui = ui
-      self._device = self._ui._device  # pylint: disable=protected-access
+      self._device = self._ui._device
       self._selector = selector
       self._direction = direction
       self._margin = margin
@@ -386,7 +445,7 @@ class _Scroll:
       selector: byselector.BySelector,
   ) -> None:
     self._ui = ui
-    self._device = self._ui._device  # pylint: disable=protected-access
+    self._device = self._ui._device
     self._selector = selector
     self._margin = None
     self._percent = None
@@ -441,7 +500,7 @@ class _Wait:
       raise_error: bool = False,
   ) -> None:
     self._ui = ui
-    self._device = self._ui._device  # pylint: disable=protected-access
+    self._device = self._ui._device
     self._selector = selector
     self._raise_error = raise_error
 
@@ -528,7 +587,7 @@ class UiObject2:
       raise_error: bool = False,
   ) -> None:
     self._ui = ui
-    self._device = self._ui._device  # pylint: disable=protected-access
+    self._device = self._ui._device
     self._selector = selector
     self._raise_error = raise_error
 
