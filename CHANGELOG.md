@@ -1,6 +1,8 @@
 # Snippet UiAutomator Release History
 
 ## 1.1.3:
+* Support raising an error when wait timeout is longer than RPC timeout
+* Support fling & swipe with margin setting
 * Support scrolling to a complex-search object
 * Support clicking on a point within the object's visible bounds
 * Fix waitUntilTrue doesn't run when passing small wait time
