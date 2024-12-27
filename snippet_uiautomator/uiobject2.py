@@ -43,6 +43,9 @@ class _Click:
   ) -> None:
     self._ui = ui
     self._selector = selector
+    self._rpc_timeout_ms = utils.covert_to_millisecond(
+        constants.DEFAULT_SNIPPET_RPC_TIMEOUT
+    )
 
   def __call__(
       self,
@@ -108,8 +111,13 @@ class _Click:
 
     Returns:
       True if a window update occurred after clicked, False otherwise.
+
+    Raises:
+      errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
+    if timeout_ms > self._rpc_timeout_ms:
+      raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     return self._ui.clickObjAndWait(self._selector.to_dict(), timeout_ms)
 
 
@@ -503,6 +511,9 @@ class _Wait:
     self._device = self._ui._device
     self._selector = selector
     self._raise_error = raise_error
+    self._rpc_timeout_ms = utils.covert_to_millisecond(
+        constants.DEFAULT_SNIPPET_RPC_TIMEOUT
+    )
 
   def click(
       self, timeout: utils.TimeUnit = constants.DEFAULT_UI_WAIT_TIME
@@ -514,8 +525,13 @@ class _Wait:
 
     Returns:
       True if the object exists and click successfully, False otherwise.
+
+    Raises:
+      errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
+    if timeout_ms > self._rpc_timeout_ms:
+      raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     if self._ui.waitForExists(self._selector.to_dict(), timeout_ms):
       return self._ui.clickObj(self._selector.to_dict())
     return False
@@ -534,8 +550,13 @@ class _Wait:
 
     Returns:
       True if this object exists, False otherwise.
+
+    Raises:
+      errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
+    if timeout_ms > self._rpc_timeout_ms:
+      raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     is_exists = self._ui.waitForExists(self._selector.to_dict(), timeout_ms)
     if is_exists:
       return True
@@ -560,8 +581,13 @@ class _Wait:
 
     Returns:
       True if this object was not found, False otherwise.
+
+    Raises:
+      errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
+    if timeout_ms > self._rpc_timeout_ms:
+      raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     is_gone = self._ui.waitUntilGone(self._selector.to_dict(), timeout_ms)
     if is_gone:
       return True

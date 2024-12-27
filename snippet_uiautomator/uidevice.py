@@ -117,6 +117,9 @@ class _Wait:
 
   def __init__(self, ui: snippet_client_v2.SnippetClientV2) -> None:
     self._ui = ui
+    self._rpc_timeout_ms = utils.covert_to_millisecond(
+        constants.DEFAULT_SNIPPET_RPC_TIMEOUT
+    )
 
   def idle(
       self, timeout: utils.TimeUnit = constants.DEFAULT_UI_WAIT_TIME
@@ -128,8 +131,13 @@ class _Wait:
 
     Returns:
       True if the current application idle in time, False otherwise.
+
+    Raises:
+      errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
+    if timeout_ms > self._rpc_timeout_ms:
+      raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     return self._ui.waitForIdle(timeout_ms)
 
   def update(
@@ -146,8 +154,13 @@ class _Wait:
 
     Returns:
       True if a window content update event occurs in time, False otherwise.
+
+    Raises:
+      errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
+    if timeout_ms > self._rpc_timeout_ms:
+      raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     return self._ui.waitForWindowUpdate(package, timeout_ms)
 
 

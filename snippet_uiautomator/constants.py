@@ -18,8 +18,14 @@ import dataclasses
 import datetime
 import enum
 
+DEFAULT_SNIPPET_RPC_TIMEOUT = datetime.timedelta(minutes=10)
 DEFAULT_UI_WAIT_TIME = datetime.timedelta(seconds=10)
 DEFAULT_WAIT_FOR_SELECTOR_TIMEOUT = datetime.timedelta(seconds=0)
+
+ERROR_MSG_FOR_LONG_TIMEOUT = (
+    'The current timeout for Snippet RPCs is capped at 10 minutes. To proceed,'
+    ' please reduce this timeout value.'
+)
 
 
 @dataclasses.dataclass(frozen=True)
