@@ -36,6 +36,16 @@ public class UiAutomationSnippet implements Snippet {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && uiAutomation.clearCache();
   }
 
+  @Rpc(description = "Adopt Shell Permission Identity")
+  public void adoptShellPermissionIdentity() {
+    uiAutomation.adoptShellPermissionIdentity();
+  }
+
+  @Rpc(description = "Drop Shell Permission Identity")
+  public void dropShellPermissionIdentity() {
+    uiAutomation.dropShellPermissionIdentity();
+  }
+
   @Override
   public void shutdown() {
   }
