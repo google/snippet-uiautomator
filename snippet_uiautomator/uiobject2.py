@@ -116,7 +116,7 @@ class _Click:
       errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
-    if timeout_ms > self._rpc_timeout_ms:
+    if timeout_ms >= self._rpc_timeout_ms:
       raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     return self._ui.clickObjAndWait(self._selector.to_dict(), timeout_ms)
 
@@ -530,7 +530,7 @@ class _Wait:
       errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
-    if timeout_ms > self._rpc_timeout_ms:
+    if timeout_ms >= self._rpc_timeout_ms:
       raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     if self._ui.waitForExists(self._selector.to_dict(), timeout_ms):
       return self._ui.clickObj(self._selector.to_dict())
@@ -555,7 +555,7 @@ class _Wait:
       errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
-    if timeout_ms > self._rpc_timeout_ms:
+    if timeout_ms >= self._rpc_timeout_ms:
       raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     is_exists = self._ui.waitForExists(self._selector.to_dict(), timeout_ms)
     if is_exists:
@@ -586,7 +586,7 @@ class _Wait:
       errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
-    if timeout_ms > self._rpc_timeout_ms:
+    if timeout_ms >= self._rpc_timeout_ms:
       raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     is_gone = self._ui.waitUntilGone(self._selector.to_dict(), timeout_ms)
     if is_gone:

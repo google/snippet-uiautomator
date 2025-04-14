@@ -136,7 +136,7 @@ class _Wait:
       errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
-    if timeout_ms > self._rpc_timeout_ms:
+    if timeout_ms >= self._rpc_timeout_ms:
       raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     return self._ui.waitForIdle(timeout_ms)
 
@@ -159,7 +159,7 @@ class _Wait:
       errors.ApiError: When the timeout is longer than the default RPC timeout.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
-    if timeout_ms > self._rpc_timeout_ms:
+    if timeout_ms >= self._rpc_timeout_ms:
       raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     return self._ui.waitForWindowUpdate(package, timeout_ms)
 
