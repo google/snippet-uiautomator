@@ -19,9 +19,12 @@ package com.google.android.mobly.snippet.uiautomator;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
 import android.graphics.Point;
+import android.view.accessibility.AccessibilityEvent;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.EventCondition;
 import androidx.test.uiautomator.StaleObjectException;
+import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 import com.google.android.mobly.snippet.Snippet;
@@ -34,6 +37,7 @@ import com.google.android.mobly.snippet.uiautomator.selector.Selector;
 import com.google.android.mobly.snippet.uiautomator.selector.SelectorException;
 import com.google.android.mobly.snippet.util.Log;
 import com.google.common.collect.ImmutableList;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -46,6 +50,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * href="https://developer.android.com/reference/androidx/test/uiautomator/UiObject2">UiObject2</a>
  */
 public class UiObject2Snippet implements Snippet {
+  private final UiDevice uiDevice = UiAutomator.getUiDevice();
+
   @Rpc(description = "Clears the text content if this object is an editable field.")
   public boolean clear(Selector selector) throws SelectorException {
     return operate(selector, UiObject2::clear);
@@ -392,7 +398,22 @@ public class UiObject2Snippet implements Snippet {
     Direction direction = Direction.valueOf(directionStr);
     try {
       return childBySelector != null
-          && uiObject2.scrollUntil(direction, Until.hasObject(childBySelector));
+          && uiObject2.scrollUntil(
+          direction,
+          new EventCondition<Boolean>() {
+            private Boolean hasObject = null;
+
+            @Override
+            public boolean accept(AccessibilityEvent event) {
+              hasObject = uiDevice.hasObject(childBySelector);
+              return hasObject;
+            }
+
+            @Override
+            public Boolean getResult() {
+              return Objects.equals(hasObject, Boolean.TRUE);
+            }
+          });
     } finally {
       uiObject2.recycle();
     }
