@@ -660,7 +660,7 @@ class UiObject2:
     """Clears the text content if this object is an editable field."""
     return self._ui.clear(self._selector.to_dict())
 
-  def find(self, **kwargs) -> Sequence[byselector.SelectorType]:
+  def find(self, **kwargs) -> Sequence[byselector.NestedSelectorType]:
     """Finds all objects under this object to match the selector criteria."""
     return self._ui.findChildObjects(
         self._selector.to_dict(), byselector.BySelector(**kwargs).to_dict()
@@ -681,7 +681,7 @@ class UiObject2:
     return self._ui.setText(self._selector.to_dict(), text)
 
   @property
-  def children(self) -> Sequence[byselector.SelectorType]:
+  def children(self) -> Sequence[byselector.NestedSelectorType]:
     """The child objects directly under this object."""
     return self._ui.getChildren(self._selector.to_dict())
 
