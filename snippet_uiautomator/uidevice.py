@@ -284,7 +284,7 @@ class UiDevice:
     """Freezes/Unfreezes the device rotation."""
     return self._ui.freezeRotation() if freeze else self._ui.unfreezeRotation()
 
-  def find(self, **kwargs) -> Sequence[byselector.NestedSelectorType]:
+  def find(self, **kwargs) -> Sequence[byselector.SelectorType]:
     """Finds all objects to match the selector criteria."""
     return self._ui.findObjects((byselector.BySelector(**kwargs).to_dict()))
 
