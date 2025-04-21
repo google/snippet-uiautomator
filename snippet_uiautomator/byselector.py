@@ -21,7 +21,8 @@ from __future__ import annotations
 
 from typing import Mapping, Union
 
-SelectorType = Mapping[str, Union[bool, int, str]]
+_Mapping = Mapping[str, Union[bool, int, str]]
+SelectorType = Mapping[str, Union[bool, int, str, _Mapping]]
 NestedSelectorType = Mapping[
     str, Union[bool, int, str, SelectorType, 'NestedSelectorType']
 ]
