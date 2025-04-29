@@ -209,7 +209,6 @@ class UiAutomatorService(base_service.BaseService):
       self._install_apk()
       self._load_snippet()
       self._initial_uidevice()
-      self._configs.skip_installing = True
 
   def stop(self) -> None:
     if not self.is_alive:
