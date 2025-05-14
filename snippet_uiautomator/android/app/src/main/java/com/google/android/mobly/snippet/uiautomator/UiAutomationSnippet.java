@@ -21,6 +21,7 @@ import android.os.Build;
 
 import com.google.android.mobly.snippet.Snippet;
 import com.google.android.mobly.snippet.rpc.Rpc;
+import com.google.android.mobly.snippet.rpc.RpcMinSdk;
 
 /**
  * UiAutomation snippet class.
@@ -36,7 +37,22 @@ public class UiAutomationSnippet implements Snippet {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && uiAutomation.clearCache();
   }
 
+  @RpcMinSdk(Build.VERSION_CODES.Q)
+  @Rpc(description = "Adopt Shell Permission Identity")
+  public void adoptShellPermissionIdentity() {
+    uiAutomation.adoptShellPermissionIdentity();
+  }
+
+  @RpcMinSdk(Build.VERSION_CODES.Q)
+  @Rpc(description = "Drop Shell Permission Identity")
+  public void dropShellPermissionIdentity() {
+    uiAutomation.dropShellPermissionIdentity();
+  }
+
   @Override
   public void shutdown() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      dropShellPermissionIdentity();
+    }
   }
 }
