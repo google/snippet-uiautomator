@@ -553,6 +553,8 @@ class _Wait:
 
     Raises:
       errors.ApiError: When the timeout is longer than the default RPC timeout.
+      errors.UiObjectSearchError: When the object is not found and raise_error
+        is True.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
     if timeout_ms >= self._rpc_timeout_ms:
@@ -566,6 +568,17 @@ class _Wait:
           self._device,
       )
     return False
+
+  def assert_exists(
+      self,
+      error_msg: str,
+      timeout: utils.TimeUnit = constants.DEFAULT_UI_WAIT_TIME,
+  ) -> None:
+    """Asserts that this object exists before the timeout."""
+    try:
+      self.exists(timeout, raise_error=True)
+    except errors.UiObjectSearchError as e:
+      raise errors.UiObjectSearchError(error_msg, self._device) from e
 
   def gone(
       self,
@@ -584,6 +597,8 @@ class _Wait:
 
     Raises:
       errors.ApiError: When the timeout is longer than the default RPC timeout.
+      errors.UiObjectSearchError: When the object is still found and raise_error
+        is True.
     """
     timeout_ms = utils.covert_to_millisecond(timeout)
     if timeout_ms >= self._rpc_timeout_ms:
@@ -598,6 +613,17 @@ class _Wait:
           self._device,
       )
     return False
+
+  def assert_gone(
+      self,
+      error_msg: str,
+      timeout: utils.TimeUnit = constants.DEFAULT_UI_WAIT_TIME,
+  ) -> None:
+    """Asserts that this object goes before the timeout."""
+    try:
+      self.gone(timeout, raise_error=True)
+    except errors.UiObjectSearchError as e:
+      raise errors.UiObjectSearchError(error_msg, self._device) from e
 
 
 class UiObject2:
@@ -704,6 +730,17 @@ class UiObject2:
           f'Not found Selector{self._selector.to_dict()}', self._device
       )
     return is_exists
+
+  def assert_exists(self, error_msg: str) -> None:
+    """Asserts that this object exists before the timeout."""
+    current_raise_error = self._raise_error
+    try:
+      self._raise_error = True
+      _ = self.exists
+    except errors.UiObjectSearchError as e:
+      raise errors.UiObjectSearchError(error_msg, self._device) from e
+    finally:
+      self._raise_error = current_raise_error
 
   @property
   def fling(self) -> _Gesture:

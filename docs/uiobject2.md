@@ -136,6 +136,27 @@ Check if an object exists
 False
 ```
 
+Raise with a custom error message if the object doesn't exist.
+
+```python
+>>> ad.ui(text='Example').assert_exists('Fail to find my example')
+Traceback (most recent call last):
+  File "/snippet_uiautomator/uiobject2.py", line 739, in assert_exists
+    _ = self.exists
+        ^^^^^^^^^^^
+  File "/snippet_uiautomator/uiobject2.py", line 729, in exists
+    raise errors.UiObjectSearchError(
+snippet_uiautomator.errors.UiObjectSearchError: <AndroidDevice|GOOG1234567890> Not found Selector{'text': 'Example'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/snippet_uiautomator/uiobject2.py", line 741, in assert_exists
+    raise errors.UiObjectSearchError(error_msg, self._device) from e
+snippet_uiautomator.errors.UiObjectSearchError: <AndroidDevice|GOOG1234567890> Fail to find my example
+```
+
 ### Clear/Set Text
 
 Clear/Set the text content on
@@ -363,17 +384,61 @@ True
 
 #### Until Appear
 
+Allow a set time for the object to become available.
+
 ```python
 >>> _WAIT_TIME = datetime.timedelta(seconds=3)
 >>> ad.ui(text='Example').wait.exists(_WAIT_TIME)
 True
 ```
 
+Raise with a custom error message if the object doesn't show before timeout.
+
+```python
+>>> ad.ui(text='Example').wait.assert_exists('Fail to find my example', _WAIT_TIME)
+Traceback (most recent call last):
+  File "/snippet_uiautomator/uiobject2.py", line 579, in assert_exists
+    self.exists(timeout, raise_error=True)
+  File "/snippet_uiautomator/uiobject2.py", line 566, in exists
+    raise errors.UiObjectSearchError(
+snippet_uiautomator.errors.UiObjectSearchError: <AndroidDevice|GOOG1234567890> Not found Selector{'text': 'Example'} over 3000 ms
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/snippet_uiautomator/uiobject2.py", line 581, in assert_exists
+    raise errors.UiObjectSearchError(error_msg, self._device) from e
+snippet_uiautomator.errors.UiObjectSearchError: <AndroidDevice|GOOG1234567890> Fail to find my example
+```
+
 #### Until Disappear
+
+Allow a set time for the object to become unavailable.
 
 ```python
 >>> ad.ui(text='Example').wait.gone(_WAIT_TIME)
 True
+```
+
+Raise with a custom error message if the object doesn't vanish before timeout.
+
+```python
+>>> ad.ui(text='Example').wait.assert_gone('Fail to exit my example', _WAIT_TIME)
+Traceback (most recent call last):
+  File "/snippet_uiautomator/uiobject2.py", line 624, in assert_gone
+    self.gone(timeout, raise_error=True)
+  File "/snippet_uiautomator/uiobject2.py", line 610, in gone
+    raise errors.UiObjectSearchError(
+snippet_uiautomator.errors.UiObjectSearchError: <AndroidDevice|GOOG1234567890> Still found Selector{'text': '48181FDAP0032U'} over 3000 ms
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/snippet_uiautomator/uiobject2.py", line 626, in assert_gone
+    raise errors.UiObjectSearchError(error_msg, self._device) from e
+snippet_uiautomator.errors.UiObjectSearchError: <AndroidDevice|GOOG1234567890> Fail to exit my example
 ```
 
 #### Click Until Appear
