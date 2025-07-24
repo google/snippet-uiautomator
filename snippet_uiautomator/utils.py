@@ -50,7 +50,7 @@ def covert_to_millisecond(timeout: TimeUnit, ignore_error: bool = False) -> int:
 
 def get_latest_logcat_timestamp(ad: android_device.AndroidDevice) -> str:
   """Gets the latest timestamp from logcat."""
-  logcat = ad.adb.logcat(['-d'])
+  logcat = ad.adb.logcat(['-b', 'main', '-t', '1'])
   last_line = logcat.splitlines()[-1]
   return re.findall(REGEX_LOGCAT_TIMESTAMP.encode(), last_line)[-1].decode()
 
