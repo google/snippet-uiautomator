@@ -116,7 +116,9 @@ class UiAutomatorService(base_service.BaseService):
   @property
   def _is_apk_installed(self) -> bool:
     """Checks if the snippet apk is already installed."""
-    all_packages = self._device.adb.shell(['pm', 'list', 'package'])
+    all_packages = self._device.adb.shell(
+        ['pm', 'list', 'packages', self._configs.snippet.package_name]
+    )
     return bool(
         mobly_utils.grep(
             f'^package:{self._configs.snippet.package_name}$', all_packages
