@@ -831,3 +831,8 @@ class UiObject2:
     """The point in the center of this object's visible bounds."""
     point = self._ui.getVisibleCenter(self._selector.to_dict())
     return constants.Point(**point)
+
+  @property
+  def selector(self) -> byselector.BySelector:
+    """The selector used to find this object."""
+    return self._selector
