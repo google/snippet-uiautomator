@@ -19,6 +19,7 @@ https://developer.android.com/reference/androidx/test/uiautomator/UiObject2
 
 from __future__ import annotations
 
+import deepcopy
 from typing import Literal, Mapping, Optional, Sequence, Union
 import warnings
 
@@ -645,7 +646,7 @@ class UiObject2:
 
   def _create_instance(self, tag: str, **kwargs) -> UiObject2:
     """Creates a new instance of this object with the given tag."""
-    selector = self._selector.copy()
+    selector = copy.deepcopy(self._selector)
     selector.append(tag, **kwargs)
     return UiObject2(self._ui, selector, self._raise_error)
 
