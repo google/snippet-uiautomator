@@ -19,7 +19,7 @@ https://developer.android.com/reference/androidx/test/uiautomator/UiObject2
 
 from __future__ import annotations
 
-import deepcopy
+import copy
 from typing import Literal, Mapping, Optional, Sequence, Union
 import warnings
 
