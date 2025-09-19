@@ -20,9 +20,9 @@ import dataclasses
 import re
 from typing import Optional
 
+from mobly import utils as mobly_utils
 from mobly.controllers import android_device
 from mobly.controllers.android_device_lib import adb
-from mobly.controllers.android_device_lib import apk_utils
 from mobly.controllers.android_device_lib.services import base_service
 from mobly.snippet import errors as snippet_errors
 from snippet_uiautomator import configurator as uiconfig
@@ -113,12 +113,22 @@ class UiAutomatorService(base_service.BaseService):
     )
     super().__init__(ad, configs)
 
+  @property
+  def _is_apk_installed(self) -> bool:
+    """Checks if the snippet apk is already installed."""
+    all_packages = self._device.adb.shell(
+        ['pm', 'list', 'packages', self._configs.snippet.package_name]
+    )
+    return bool(
+        mobly_utils.grep(
+            f'^package:{self._configs.snippet.package_name}$', all_packages
+        )
+    )
+
   def _install_apk(self) -> None:
     """Installs the snippet apk to the Android devices."""
     if self._configs.skip_installing:
-      if not apk_utils.is_apk_installed(
-          self._device, self._configs.snippet.package_name
-      ):
+      if not self._is_apk_installed:
         raise errors.ConfigurationError(
             errors.ERROR_WHEN_APK_IS_NOT_INSTALLED.format(
                 package_name=self._configs.snippet.package_name
@@ -126,9 +136,10 @@ class UiAutomatorService(base_service.BaseService):
             self._device,
         )
     else:
-      # In case the existing application is signed with a different key.
-      apk_utils.uninstall(self._device, self._configs.snippet.package_name)
-      apk_utils.install(self._device, self._configs.snippet.file_path)
+      if self._is_apk_installed:
+        # In case the existing application is signed with a different key.
+        self._device.adb.uninstall(self._configs.snippet.package_name)
+      self._device.adb.install(['-g', self._configs.snippet.file_path])
 
   def _load_snippet(self) -> None:
     """Starts the snippet apk with the given package name and connects."""
@@ -206,9 +217,7 @@ class UiAutomatorService(base_service.BaseService):
       self._device.log.debug('uiautomator service has already stopped')
       return
 
-    if not apk_utils.is_apk_installed(
-        self._device, self._configs.snippet.package_name
-    ):
+    if not self._is_apk_installed:
       self._device.log.debug(
           'package %s was uninstalled before stopping the service',
           self._configs.snippet.package_name,
