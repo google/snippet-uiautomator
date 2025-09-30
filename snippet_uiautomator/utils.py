@@ -51,6 +51,9 @@ def covert_to_millisecond(timeout: TimeUnit, ignore_error: bool = False) -> int:
 def get_latest_logcat_timestamp(ad: android_device.AndroidDevice) -> str:
   """Gets the latest timestamp from logcat."""
   logcat = ad.adb.logcat(['-b', 'main', '-t', '1'])
+  if not logcat:
+    ad.log.error('Failed to get logcat, skip getting latest timestamp.')
+    return ''
   last_line = logcat.splitlines()[-1]
   return re.findall(REGEX_LOGCAT_TIMESTAMP.encode(), last_line)[-1].decode()
 
@@ -72,8 +75,12 @@ def is_uiautomator_service_registered(
   Args:
     ad: Mobly Android device controller.
     start_time: A timestamp that conforms to the REGEX_LOGCAT_TIMESTAMP format
-      will only check the log after this time point.
+      will only check the log after this time point. If empty, will skip the
+      check.
   """
+  if not start_time:
+    ad.log.error('Failed to get timestamp from logcat, skip checking.')
+    return False
   logcat = ad.adb.logcat(['-d', '-s', 'AndroidRuntime:E'])
   runtime_errors = re.findall(
       REGEX_UIA_SERVICE_ALREADY_REGISTERED.encode(), logcat
