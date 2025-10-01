@@ -23,11 +23,13 @@ from typing import Optional
 from mobly import utils as mobly_utils
 from mobly.controllers import android_device
 from mobly.controllers.android_device_lib import adb
+from mobly.controllers.android_device_lib import snippet_client_v2
 from mobly.controllers.android_device_lib.services import base_service
-from mobly.snippet import errors as snippet_errors
+from mobly.controllers.android_device_lib.services import snippet_management_service
 from snippet_uiautomator import configurator as uiconfig
 from snippet_uiautomator import constants
 from snippet_uiautomator import errors
+from snippet_uiautomator import snippet_client
 from snippet_uiautomator import uidevice
 from snippet_uiautomator import uiobject2
 from snippet_uiautomator import uiwatcher
@@ -64,6 +66,8 @@ class Snippet:
     custom_service_name: The attribute name that has already attached to the
       existing snippet client. This can be None if the Snippet UiAutomator is
       not wrapped into other snippet apps.
+    user_id: The user id where the snippet is loaded. If not set, the snippet
+       will be loaded to the default user.
   """
 
   file_path: str = dataclasses.field(default_factory=utils.get_uiautomator_apk)
@@ -71,6 +75,7 @@ class Snippet:
   ui_public_service_name: str = PUBLIC_SERVICE_NAME
   ui_hidden_service_name: Optional[str] = None
   custom_service_name: Optional[str] = None
+  user_id: Optional[int] = None
 
 
 @dataclasses.dataclass
@@ -111,13 +116,24 @@ class UiAutomatorService(base_service.BaseService):
         or configs.snippet.ui_hidden_service_name
         or HIDDEN_SERVICE_NAME
     )
+    self._user_args = (
+        []
+        if configs.snippet.user_id is None
+        else ['--user', str(configs.snippet.user_id)]
+    )
     super().__init__(ad, configs)
 
   @property
   def _is_apk_installed(self) -> bool:
     """Checks if the snippet apk is already installed."""
     all_packages = self._device.adb.shell(
-        ['pm', 'list', 'packages', self._configs.snippet.package_name]
+        [
+            'pm',
+            'list',
+            'packages',
+            *self._user_args,
+            self._configs.snippet.package_name,
+        ]
     )
     return bool(
         mobly_utils.grep(
@@ -138,8 +154,12 @@ class UiAutomatorService(base_service.BaseService):
     else:
       if self._is_apk_installed:
         # In case the existing application is signed with a different key.
-        self._device.adb.uninstall(self._configs.snippet.package_name)
-      self._device.adb.install(['-g', self._configs.snippet.file_path])
+        self._device.adb.uninstall(
+            [*self._user_args, self._configs.snippet.package_name]
+        )
+      self._device.adb.install(
+          ['-g', *self._user_args, self._configs.snippet.file_path]
+      )
 
   def _load_snippet(self) -> None:
     """Starts the snippet apk with the given package name and connects."""
@@ -154,12 +174,24 @@ class UiAutomatorService(base_service.BaseService):
       raise errors.ConfigurationError(
           errors.ERROR_WHEN_PACKAGE_NAME_MISSING, self._device
       )
+
     start_time = utils.get_latest_logcat_timestamp(self._device)
     try:
-      self._device.load_snippet(
-          self._service, self._configs.snippet.package_name
+      if not self._device.services.has_service_by_name('snippets'):
+        self._device.services.register(
+            'snippets', snippet_management_service.SnippetManagementService
+        )
+      client = snippet_client.SnippetClient(
+          user_args=self._user_args,
+          package=self._configs.snippet.package_name,
+          ad=self._device,
+          config=None
+          if self._configs.snippet.user_id is None
+          else snippet_client_v2.Config(user_id=self._configs.snippet.user_id),
       )
-    except snippet_errors.ServerStartProtocolError as e:
+      client.initialize()
+      snippet_manager._snippet_clients[self._service] = client  # pylint: disable=protected-access
+    except Exception as e:
       if utils.is_uiautomator_service_registered(self._device, start_time):
         raise errors.UiAutomationServiceAlreadyRegisteredError(
             errors.ERROR_WHEN_SERVICE_ALREADY_REGISTERED, self._device
