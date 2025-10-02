@@ -35,6 +35,15 @@ def test_covert_to_millisecond_succeeds(timeout, expected):
   assert millisecond == expected
 
 
+def test_get_latest_logcat_timestamp_fails():
+  mock_ad = mock.Mock()
+  mock_ad.adb.logcat.return_value = b''
+
+  timestamp = utils.get_latest_logcat_timestamp(mock_ad)
+
+  assert timestamp == ''
+
+
 def test_get_latest_logcat_timestamp_succeeds():
   mock_ad = mock.Mock()
   mock_ad.adb.logcat.return_value = (
@@ -92,6 +101,16 @@ def test_is_uiautomator_service_registered_when_found_old_registered_error():
       b' android.accessibilityservice.IAccessibilityServiceClient$Stub$Proxy@fabaa34already'
       b' registered!\n'
   )
+
+  is_registered = utils.is_uiautomator_service_registered(mock_ad, start_time)
+
+  assert not is_registered
+
+
+def test_is_uiautomator_service_registered_when_fail_to_get_logcat():
+  start_time = ''
+  mock_ad = mock.Mock()
+  mock_ad.adb.logcat.return_value = b''
 
   is_registered = utils.is_uiautomator_service_registered(mock_ad, start_time)
 
