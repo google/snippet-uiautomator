@@ -16,6 +16,7 @@
 
 package com.google.android.mobly.snippet.uiautomator;
 
+import android.app.UiAutomation;
 import android.os.Build;
 import com.google.android.mobly.snippet.Snippet;
 import com.google.android.mobly.snippet.rpc.Rpc;
@@ -27,23 +28,24 @@ import com.google.android.mobly.snippet.rpc.RpcMinSdk;
  * <p><a href="https://developer.android.com/reference/android/app/UiAutomation">UiAutomation</a>
  */
 public class UiAutomationSnippet implements Snippet {
+  private static UiAutomation uiAutomation = UiAutomator.getUiAutomation();
 
   @Rpc(description = "Clears the accessibility cache.")
   public boolean clearCache() {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
-        && UiAutomator.getUiAutomation().clearCache();
+        && uiAutomation.clearCache();
   }
 
   @RpcMinSdk(Build.VERSION_CODES.Q)
   @Rpc(description = "Adopt Shell Permission Identity")
   public void adoptShellPermissionIdentity() {
-    UiAutomator.getUiAutomation().adoptShellPermissionIdentity();
+    uiAutomation.adoptShellPermissionIdentity();
   }
 
   @RpcMinSdk(Build.VERSION_CODES.Q)
   @Rpc(description = "Drop Shell Permission Identity")
   public void dropShellPermissionIdentity() {
-    UiAutomator.getUiAutomation().dropShellPermissionIdentity();
+    uiAutomation.dropShellPermissionIdentity();
   }
 
   @Override

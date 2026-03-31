@@ -25,6 +25,7 @@ import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.SearchCondition;
 import androidx.test.uiautomator.Searchable;
 import androidx.test.uiautomator.StaleObjectException;
+import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 import com.google.android.mobly.snippet.Snippet;
@@ -49,6 +50,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * href="https://developer.android.com/reference/androidx/test/uiautomator/UiObject2">UiObject2</a>
  */
 public class UiObject2Snippet implements Snippet {
+  private UiDevice uiDevice = UiAutomator.getUiDevice();
 
   @Rpc(description = "Clears the text content if this object is an editable field.")
   public boolean clear(Selector selector) throws SelectorException {
@@ -401,7 +403,7 @@ public class UiObject2Snippet implements Snippet {
               new SearchCondition<Boolean>() {
                 @Override
                 public Boolean apply(Searchable searchable) {
-                  return UiAutomator.getUiDevice().hasObject(childBySelector);
+                  return uiDevice.hasObject(childBySelector);
                 }
 
                 @NonNull

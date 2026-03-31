@@ -67,7 +67,7 @@ class Snippet:
       existing snippet client. This can be None if the Snippet UiAutomator is
       not wrapped into other snippet apps.
     user_id: The user id where the snippet is loaded. If not set, the snippet
-       will be loaded to the default user.
+      will be loaded to the default user.
   """
 
   file_path: str = dataclasses.field(default_factory=utils.get_uiautomator_apk)
@@ -181,13 +181,17 @@ class UiAutomatorService(base_service.BaseService):
         self._device.services.register(
             'snippets', snippet_management_service.SnippetManagementService
         )
+      client_config = snippet_client_v2.Config(
+          user_id=self._configs.snippet.user_id
+      )
+      client_config.am_instrument_options.update(
+          self._configs.configurator.to_dict()
+      )
       client = snippet_client.SnippetClient(
           user_args=self._user_args,
           package=self._configs.snippet.package_name,
           ad=self._device,
-          config=None
-          if self._configs.snippet.user_id is None
-          else snippet_client_v2.Config(user_id=self._configs.snippet.user_id),
+          config=client_config,
       )
       client.initialize()
       snippet_manager._snippet_clients[self._service] = client  # pylint: disable=protected-access
@@ -200,12 +204,12 @@ class UiAutomatorService(base_service.BaseService):
 
   def _initial_uidevice(self) -> None:
     """Initializes the UiDevice object."""
-    snippet_client = getattr(self._device, self._service)
-    snippet_client.setConfigurator(self._configs.configurator.to_dict())
+    svc_client = getattr(self._device, self._service)
+    svc_client.setConfigurator(self._configs.configurator.to_dict())
     setattr(
         self._device,
         self._configs.snippet.ui_public_service_name,
-        UiDevice(ui=snippet_client, raise_error=self._configs.raise_error),
+        UiDevice(ui=svc_client, raise_error=self._configs.raise_error),
     )
 
   @property
