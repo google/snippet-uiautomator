@@ -18,7 +18,8 @@ https://developer.android.com/reference/androidx/test/uiautomator/UiDevice
 """
 
 import pathlib
-from typing import Callable, Literal, Mapping, Optional, Sequence, Union, overload
+import time
+from typing import Callable, List, Literal, Mapping, Optional, Sequence, Union, overload
 import xml
 
 from mobly.controllers.android_device_lib import snippet_client_v2
@@ -162,6 +163,48 @@ class _Wait:
     if timeout_ms >= self._rpc_timeout_ms:
       raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     return self._ui.waitForWindowUpdate(package, timeout_ms)
+
+  def any_exists(
+      self,
+      *objects: Union[uiobject2.UiObject2, Sequence[uiobject2.UiObject2]],
+      timeout: utils.TimeUnit = constants.DEFAULT_UI_WAIT_TIME,
+  ) -> Optional[uiobject2.UiObject2]:
+    """Waits for any of the given UI objects to exist.
+
+    Args:
+      *objects: UiObject2 instances to check (can be passed as positional args
+        or sequences).
+      timeout: The total time to wait.
+
+    Returns:
+      The first UiObject2 that exists, or None if none exist within timeout.
+    """
+    target_objects: List[uiobject2.UiObject2] = []
+    for obj in objects:
+      if isinstance(obj, uiobject2.UiObject2):
+        target_objects.append(obj)
+      else:
+        target_objects.extend(obj)
+
+    ui = self._ui
+    timeout_ms = utils.covert_to_millisecond(timeout)
+    poll_interval_ms = 100
+
+    start_time_ms = time.time() * 1000
+    while True:
+      for obj in target_objects:
+        if ui.exists(obj.selector.to_dict()):
+          return obj
+
+      elapsed_ms = (time.time() * 1000) - start_time_ms
+      if elapsed_ms >= timeout_ms:
+        break
+
+      remaining_ms = timeout_ms - elapsed_ms
+      sleep_ms = min(poll_interval_ms, remaining_ms)
+      time.sleep(sleep_ms / 1000.0)
+
+    return None
 
 
 class UiDevice:
