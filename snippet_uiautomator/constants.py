@@ -14,6 +14,7 @@
 
 """Public constants for UiAutomator."""
 
+from typing import Dict
 import dataclasses
 import datetime
 import enum
@@ -58,7 +59,7 @@ class Point:
   x: int
   y: int
 
-  def to_dict(self) -> dict[str, int]:
+  def to_dict(self) -> Dict[str, int]:
     """Returns the dictionary representation of the Point object."""
     return {'x': self.x, 'y': self.y}
 
