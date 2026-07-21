@@ -17,6 +17,7 @@
 import dataclasses
 import datetime
 import enum
+from typing import Dict
 
 DEFAULT_SNIPPET_RPC_TIMEOUT = datetime.timedelta(minutes=10)
 DEFAULT_UI_WAIT_TIME = datetime.timedelta(seconds=10)
@@ -58,7 +59,7 @@ class Point:
   x: int
   y: int
 
-  def to_dict(self) -> dict[str, int]:
+  def to_dict(self) -> Dict[str, int]:
     """Returns the dictionary representation of the Point object."""
     return {'x': self.x, 'y': self.y}
 

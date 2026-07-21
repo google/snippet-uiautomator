@@ -18,7 +18,8 @@ https://developer.android.com/reference/androidx/test/uiautomator/UiDevice
 """
 
 import pathlib
-from typing import Callable, Literal, Mapping, Optional, Sequence, Union, overload
+import time
+from typing import Callable, Iterable, Literal, Mapping, Optional, Sequence, Union, overload
 import xml
 
 from mobly.controllers.android_device_lib import snippet_client_v2
@@ -162,6 +163,40 @@ class _Wait:
     if timeout_ms >= self._rpc_timeout_ms:
       raise errors.ApiError(constants.ERROR_MSG_FOR_LONG_TIMEOUT)
     return self._ui.waitForWindowUpdate(package, timeout_ms)
+
+  def any_exists(
+      self,
+      objects: Iterable[uiobject2.UiObject2],
+      timeout: utils.TimeUnit = constants.DEFAULT_UI_WAIT_TIME,
+  ) -> Optional[uiobject2.UiObject2]:
+    """Waits for any of the given UI objects to exist.
+
+    Args:
+      objects: UiObject2 instances to check.
+      timeout: The total time to wait.
+
+    Returns:
+      The first UiObject2 that exists, or None if none exist within timeout.
+    """
+    ui = self._ui
+    timeout_ms = utils.covert_to_millisecond(timeout)
+    poll_interval_ms = 100
+
+    start_time = time.monotonic()
+    while True:
+      for obj in objects:
+        if ui.exists(obj.selector.to_dict()):
+          return obj
+
+      elapsed_ms = (time.monotonic() - start_time) * 1000
+      if elapsed_ms >= timeout_ms:
+        break
+
+      remaining_ms = timeout_ms - elapsed_ms
+      sleep_ms = min(poll_interval_ms, remaining_ms)
+      time.sleep(sleep_ms / 1000.0)
+
+    return None
 
 
 class UiDevice:
@@ -337,12 +372,12 @@ class UiDevice:
 
   def swipe(
       self,
-      sx: int | None = None,
-      sy: int | None = None,
-      ex: int | None = None,
-      ey: int | None = None,
+      sx: Optional[int] = None,
+      sy: Optional[int] = None,
+      ex: Optional[int] = None,
+      ey: Optional[int] = None,
       steps: int = 100,
-      points: Sequence[constants.Point] | None = None,
+      points: Optional[Sequence[constants.Point]] = None,
   ) -> bool:
     """Performs a swipe from one coordinate to another.
 
