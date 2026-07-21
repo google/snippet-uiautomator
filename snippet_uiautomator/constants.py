@@ -14,10 +14,10 @@
 
 """Public constants for UiAutomator."""
 
-from typing import Dict
 import dataclasses
 import datetime
 import enum
+from typing import Dict
 
 DEFAULT_SNIPPET_RPC_TIMEOUT = datetime.timedelta(minutes=10)
 DEFAULT_UI_WAIT_TIME = datetime.timedelta(seconds=10)
