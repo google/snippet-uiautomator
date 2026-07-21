@@ -19,7 +19,7 @@ https://developer.android.com/reference/androidx/test/uiautomator/BySelector
 
 from __future__ import annotations
 
-from typing import Mapping, Union
+from typing import Any, Dict, Mapping, Union, cast
 
 _Mapping = Mapping[str, Union[bool, int, str]]
 SelectorType = Mapping[str, Union[bool, int, str, _Mapping]]
@@ -49,19 +49,21 @@ class BySelector:
       'top',
   )
 
-  def __init__(self, **kwargs) -> None:
+  def __init__(self, **kwargs: Any) -> None:
     """Converts the keyword arguments to selector type."""
-    self._selector = dict(kwargs)
-    self._bottom = self._selector
+    self._selector: Dict[str, Any] = dict(kwargs)
+    self._bottom: Dict[str, Any] = self._selector
 
-  def _find_bottom_selector(self, d: NestedSelectorType) -> NestedSelectorType:
+  def _find_bottom_selector(self, d: Dict[str, Any]) -> Dict[str, Any]:
     """Returns the bottom dict object of main selector."""
     for key in d.keys():
       if key in self.SUBSELECTOR:
-        return self._find_bottom_selector(d[key])
+        val = d[key]
+        if isinstance(val, dict):
+          return self._find_bottom_selector(val)
     return d
 
-  def append(self, name: str, **kwargs) -> None:
+  def append(self, name: str, **kwargs: Any) -> None:
     """Adds a new selector to the bottom of main selector.
 
     Args:
@@ -92,4 +94,4 @@ class BySelector:
 
   def to_dict(self) -> NestedSelectorType:
     """Returns a selector as a dictionary."""
-    return self._selector
+    return cast(NestedSelectorType, self._selector)
