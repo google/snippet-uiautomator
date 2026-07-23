@@ -89,8 +89,8 @@ class BySelector:
     """Returns a copy of this selector."""
     selector = BySelector(**self._selector)
     selector._bottom = self._find_bottom_selector(
-        selector._selector
-    )  # pyrefly: ignore[bad-argument-type]
+        selector._selector  # pyrefly: ignore[bad-argument-type]
+    )
     return selector
 
   def is_nested(self) -> bool:

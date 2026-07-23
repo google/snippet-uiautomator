@@ -19,6 +19,7 @@ package com.google.android.mobly.snippet.uiautomator;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
 import android.graphics.Point;
+import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
@@ -38,6 +39,7 @@ import com.google.android.mobly.snippet.uiautomator.selector.Selector;
 import com.google.android.mobly.snippet.uiautomator.selector.SelectorException;
 import com.google.android.mobly.snippet.util.Log;
 import com.google.common.collect.ImmutableList;
+import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -66,20 +68,15 @@ public class UiObject2Snippet implements Snippet {
             try {
               return uiObject2
                   .getAccessibilityNodeInfo()
-                  .performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK);
+                  .performAction(AccessibilityNodeInfo.ACTION_CLICK);
             } catch (NoSuchMethodError | IllegalAccessError e) {
-              java.lang.reflect.Method m =
-                  UiObject2.class.getDeclaredMethod("getAccessibilityNodeInfo");
+              Method m = UiObject2.class.getDeclaredMethod("getAccessibilityNodeInfo");
               m.setAccessible(true);
-              android.view.accessibility.AccessibilityNodeInfo node =
-                  (android.view.accessibility.AccessibilityNodeInfo) m.invoke(uiObject2);
-              return node != null
-                  && node.performAction(
-                  android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK);
+              AccessibilityNodeInfo node = (AccessibilityNodeInfo) m.invoke(uiObject2);
+              return node != null && node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
             }
           } catch (Exception e) {
-            com.google.android.mobly.snippet.util.Log.e(
-                "Failed to get AccessibilityNodeInfo from UiObject2", e);
+            Log.e("Failed to get AccessibilityNodeInfo from UiObject2", e);
             return false;
           }
         });

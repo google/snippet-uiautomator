@@ -137,8 +137,8 @@ class UiAutomatorService(base_service.BaseService):
     )
     return bool(
         mobly_utils.grep(
-            f'^package:{self._configs.snippet.package_name}$',
-            all_packages,  # pyrefly: ignore[missing-attribute]
+            f'^package:{self._configs.snippet.package_name}$',  # pyrefly: ignore[missing-attribute]
+            all_packages,
         )
     )
 
@@ -158,15 +158,15 @@ class UiAutomatorService(base_service.BaseService):
         self._device.adb.uninstall(
             [
                 *self._user_args,
-                self._configs.snippet.package_name,
-            ]  # pyrefly: ignore[missing-attribute]
+                self._configs.snippet.package_name,  # pyrefly: ignore[missing-attribute]
+            ]
         )
       self._device.adb.install(
           [
               '-g',
               *self._user_args,
-              self._configs.snippet.file_path,
-          ]  # pyrefly: ignore[missing-attribute]
+              self._configs.snippet.file_path,  # pyrefly: ignore[missing-attribute]
+          ]
       )
 
   def _load_snippet(self) -> None:
@@ -179,8 +179,9 @@ class UiAutomatorService(base_service.BaseService):
       return
 
     if (
-        self._configs.snippet.package_name is None
-    ):  # pyrefly: ignore[missing-attribute]
+        self._configs.snippet.package_name  # pyrefly: ignore[missing-attribute]
+        is None
+    ):
       raise errors.ConfigurationError(
           errors.ERROR_WHEN_PACKAGE_NAME_MISSING, self._device
       )
@@ -215,11 +216,16 @@ class UiAutomatorService(base_service.BaseService):
   def _initial_uidevice(self) -> None:
     """Initializes the UiDevice object."""
     svc_client = getattr(self._device, self._service)
-    svc_client.setConfigurator(self._configs.configurator.to_dict())  # pylint: disable=protected-access
+    svc_client.setConfigurator(
+        self._configs.configurator.to_dict()  # pyrefly: ignore[missing-attribute]
+    )
     setattr(
         self._device,
-        self._configs.snippet.ui_public_service_name,  # pylint: disable=protected-access
-        UiDevice(ui=svc_client, raise_error=self._configs.raise_error),  # pylint: disable=protected-access
+        self._configs.snippet.ui_public_service_name,  # pyrefly: ignore[missing-attribute]
+        UiDevice(
+            ui=svc_client,
+            raise_error=self._configs.raise_error,  # pyrefly: ignore[missing-attribute]
+        ),
     )
 
   @property
@@ -230,12 +236,14 @@ class UiAutomatorService(base_service.BaseService):
           errors.ERROR_WHEN_SERVICE_NOT_RUNNING, self._device
       )
     service = getattr(
-        self._device, self._configs.snippet.ui_public_service_name, None  # pylint: disable=protected-access
+        self._device,
+        self._configs.snippet.ui_public_service_name,  # pyrefly: ignore[missing-attribute]
+        None,
     )
     if service is None:
       raise errors.ConfigurationError(
           errors.ERROR_WHEN_INSTANCE_MISSING.format(
-              instance=self._configs.snippet.ui_public_service_name  # pylint: disable=protected-access
+              instance=self._configs.snippet.ui_public_service_name  # pyrefly: ignore[missing-attribute]
           ),
           self._device,
       )
@@ -244,7 +252,10 @@ class UiAutomatorService(base_service.BaseService):
   @property
   def is_alive(self) -> bool:
     return (
-        hasattr(self._device, self._configs.snippet.ui_public_service_name)  # pylint: disable=protected-access
+        hasattr(
+            self._device,
+            self._configs.snippet.ui_public_service_name,  # pyrefly: ignore[missing-attribute]
+        )
         and hasattr(self._device.services, 'snippets')
         and self._device.services.snippets.get_snippet_client(self._service)
         is not None
@@ -280,12 +291,18 @@ class UiAutomatorService(base_service.BaseService):
           ' snippet client'
       )
 
-    if hasattr(self._device, self._configs.snippet.ui_public_service_name):  # pylint: disable=protected-access
-      delattr(self._device, self._configs.snippet.ui_public_service_name)  # pylint: disable=protected-access
+    if hasattr(
+        self._device,
+        self._configs.snippet.ui_public_service_name,  # pyrefly: ignore[missing-attribute]
+    ):
+      delattr(
+          self._device,
+          self._configs.snippet.ui_public_service_name,  # pyrefly: ignore[missing-attribute]
+      )
     else:
       self._device.log.debug(
           'class UiDevice %s was deleted before stopping the service',
-          self._configs.snippet.ui_public_service_name,  # pylint: disable=protected-access
+          self._configs.snippet.ui_public_service_name,  # pyrefly: ignore[missing-attribute]
       )
 
   def pause(self):
