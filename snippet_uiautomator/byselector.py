@@ -82,13 +82,15 @@ class BySelector:
       raise SelectorError(
           f'Basic selector should not contain sub-selector: {repr(kwargs)}'
       )
-    self._bottom[name] = dict(kwargs)
-    self._bottom = self._bottom[name]
+    self._bottom[name] = dict(kwargs)  # pyrefly: ignore[unsupported-operation]
+    self._bottom = self._bottom[name]  # pyrefly: ignore[bad-assignment]
 
   def copy(self) -> BySelector:
     """Returns a copy of this selector."""
     selector = BySelector(**self._selector)
-    selector._bottom = self._find_bottom_selector(selector._selector)  # pylint: disable=protected-access
+    selector._bottom = self._find_bottom_selector(
+        selector._selector
+    )  # pyrefly: ignore[bad-argument-type]
     return selector
 
   def is_nested(self) -> bool:

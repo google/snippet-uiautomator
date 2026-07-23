@@ -683,6 +683,16 @@ class UiObject2:
     """Finds the closest object that is above this object."""
     return self._create_instance('top', **kwargs)
 
+  def accessibility_click(self) -> bool:
+    """Clicks on this object using Accessibility node action directly.
+
+    This acts as a programmatic bypass for hardware pointer injection.
+
+    Returns:
+      True if operation succeeds, False otherwise.
+    """
+    return self._ui.accessibilityClick(self._selector.to_dict())
+
   def clear_text(self) -> bool:
     """Clears the text content if this object is an editable field."""
     return self._ui.clear(self._selector.to_dict())
