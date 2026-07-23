@@ -52,6 +52,39 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public class UiObject2Snippet implements Snippet {
   private UiDevice uiDevice = UiAutomator.getUiDevice();
 
+  @Rpc(
+      description =
+          "Clicks on this object using Accessibility node action directly, bypassing pointer"
+              + " injection.")
+  public boolean accessibilityClick(Selector selector) throws SelectorException {
+    return getBoolean(
+        selector,
+        uiObject2 -> {
+          try {
+            // Not all versions of UiObject2 cleanly expose this as public in all branches,
+            // so we can reflect it if it's package-private, or call it directly if public.
+            try {
+              return uiObject2
+                  .getAccessibilityNodeInfo()
+                  .performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK);
+            } catch (NoSuchMethodError | IllegalAccessError e) {
+              java.lang.reflect.Method m =
+                  UiObject2.class.getDeclaredMethod("getAccessibilityNodeInfo");
+              m.setAccessible(true);
+              android.view.accessibility.AccessibilityNodeInfo node =
+                  (android.view.accessibility.AccessibilityNodeInfo) m.invoke(uiObject2);
+              return node != null
+                  && node.performAction(
+                  android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK);
+            }
+          } catch (Exception e) {
+            com.google.android.mobly.snippet.util.Log.e(
+                "Failed to get AccessibilityNodeInfo from UiObject2", e);
+            return false;
+          }
+        });
+  }
+
   @Rpc(description = "Clears the text content if this object is an editable field.")
   public boolean clear(Selector selector) throws SelectorException {
     return operate(selector, UiObject2::clear);
