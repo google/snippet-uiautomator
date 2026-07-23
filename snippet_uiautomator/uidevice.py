@@ -19,7 +19,7 @@ https://developer.android.com/reference/androidx/test/uiautomator/UiDevice
 
 import pathlib
 import time
-from typing import Callable, Iterable, Literal, Mapping, Optional, Sequence, Union, overload
+from typing import Callable, Iterable, Literal, Mapping, Optional, Sequence, Union, cast, overload
 import xml
 
 from mobly.controllers.android_device_lib import snippet_client_v2
@@ -61,7 +61,7 @@ class _Press:
       return self._ui.pressKeyCode(keycode, meta)
     elif isinstance(keycode, (list, tuple)):
       return self._ui.pressKeyCodes(keycode, meta)
-    return self._press(keycode)
+    return self._press(cast(str, keycode))
 
   def __getattr__(self, keycode: str) -> Callable[[], bool]:
     """Calls the press action via dot notation."""

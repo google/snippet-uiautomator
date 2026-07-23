@@ -49,10 +49,13 @@ class BySelector:
       'top',
   )
 
+  _bottom: NestedSelectorType
+  _selector: NestedSelectorType
+
   def __init__(self, **kwargs: Any) -> None:
     """Converts the keyword arguments to selector type."""
-    self._selector: Dict[str, Any] = dict(kwargs)
-    self._bottom: Dict[str, Any] = self._selector
+    self._selector = dict(kwargs)
+    self._bottom = self._selector
 
   def _find_bottom_selector(self, d: Dict[str, Any]) -> Dict[str, Any]:
     """Returns the bottom dict object of main selector."""
