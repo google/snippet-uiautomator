@@ -17,6 +17,7 @@
 from typing import Any, Sequence
 
 from mobly.controllers import android_device
+from mobly.controllers.android_device_lib import adb
 from mobly.controllers.android_device_lib import snippet_client_v2
 from mobly.snippet import errors as snippet_errors
 
@@ -51,7 +52,19 @@ class SnippetClient(snippet_client_v2.SnippetClientV2):
     """Restarts the snippet connection."""
     if self.host_port in _list_occupied_adb_ports(self._device):
       self.close_connection()
-    self._adb.shell(['pm', 'clear', *self.user_args, self.package])
+
+    # Clearing the package is best-effort: `pm clear` can transiently fail
+    # (e.g. right after a reboot or while the user session is not ready) and
+    # that must not prevent the server from being restarted.
+    try:
+      self._adb.shell(['pm', 'clear', *self.user_args, self.package])
+    except adb.AdbError as e:
+      self._device.log.warning(
+          'Failed to clear snippet package %s before restarting: %s',
+          self.package,
+          e,
+      )
+
     self.start_server()
     self.make_connection()
 

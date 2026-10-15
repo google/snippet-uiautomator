@@ -29,7 +29,6 @@ from snippet_uiautomator import constants
 from snippet_uiautomator import errors
 from snippet_uiautomator import utils
 
-
 # Since uiobject2 access the private RPC client, disable the warning.
 # pylint: disable=protected-access
 
