@@ -109,3 +109,24 @@ def test_any_exists_not_found_timeout():
   assert result is None
   assert mock_ui.exists.call_count >= 4  # 2 objects * 2+ loops
   assert elapsed >= 200
+
+
+def test_list_windows_returns_rpc_result():
+  windows = [
+      {
+          'id': 7,
+          'type': 1,
+          'layer': 0,
+          'bounds': '[0,0][450,450]',
+          'title': 'Settings',
+          'active': True,
+          'focused': True,
+      }
+  ]
+  mock_ui = mock.Mock()
+  mock_ui._device.log_path = '/tmp'
+  mock_ui.listWindows.return_value = windows
+  device = uidevice.UiDevice(mock_ui)
+
+  assert device.list_windows() == windows
+  mock_ui.listWindows.assert_called_once_with()
