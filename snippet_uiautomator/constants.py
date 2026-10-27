@@ -17,7 +17,7 @@
 import dataclasses
 import datetime
 import enum
-from typing import Dict
+from typing import Dict, TypedDict
 
 DEFAULT_SNIPPET_RPC_TIMEOUT = datetime.timedelta(minutes=10)
 DEFAULT_UI_WAIT_TIME = datetime.timedelta(seconds=10)
@@ -62,6 +62,39 @@ class Point:
   def to_dict(self) -> Dict[str, int]:
     """Returns the dictionary representation of the Point object."""
     return {'x': self.x, 'y': self.y}
+
+
+class Bounds(TypedDict):
+  """Represents android.graphics.Rect in screen coordinates."""
+
+  left: int
+  top: int
+  right: int
+  bottom: int
+
+
+class WindowInfo(TypedDict):
+  """Represents android.view.accessibility.AccessibilityWindowInfo.
+
+  Attributes:
+    id: The unique ID of the window.
+    displayId: The ID of the display containing the window.
+    type: One of the AccessibilityWindowInfo.TYPE_* values.
+    layer: The Z-order layer of the window; higher layers are on top.
+    title: The window title, or an empty string if it has none.
+    active: Whether the window is active.
+    focused: Whether the window has input focus.
+    bounds: The window bounds in screen coordinates.
+  """
+
+  id: int
+  displayId: int
+  type: int
+  layer: int
+  title: str
+  active: bool
+  focused: bool
+  bounds: Bounds
 
 
 @enum.unique

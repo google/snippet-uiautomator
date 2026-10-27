@@ -331,17 +331,14 @@ class UiDevice:
     """Clears the accessibility cache, applicable to sdk 34 or higher."""
     return self._ui.clearCache()
 
-  def list_windows(self) -> Sequence[Mapping[str, Union[int, str, bool]]]:
-    """Lists the accessibility windows currently on screen.
-
-    Each window is a dict with `id`, `type`, `layer`, `bounds` (as
-    "[left,top][right,bottom]"), `title`, `active` and `focused`, as reported
-    by UiAutomation.getWindows().
+  def get_windows(self) -> Sequence[constants.WindowInfo]:
+    """Returns the accessibility windows currently on screen.
 
     Returns:
-      One dict per window, in the order UiAutomation returns them.
+      One entry per window, in the order UiAutomation.getWindows() returns
+      them. See constants.WindowInfo for the fields.
     """
-    return self._ui.listWindows()
+    return self._ui.getWindows()
 
   def click(self, x: int, y: int) -> bool:
     """Performs a click at arbitrary coordinates specified by the user.

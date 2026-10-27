@@ -111,22 +111,26 @@ def test_any_exists_not_found_timeout():
   assert elapsed >= 200
 
 
-def test_list_windows_returns_rpc_result():
+def test_get_windows_returns_rpc_result():
   windows = [
       {
           'id': 7,
+          'displayId': 0,
           'type': 1,
           'layer': 0,
-          'bounds': '[0,0][450,450]',
           'title': 'Settings',
           'active': True,
           'focused': True,
+          'bounds': {'left': 0, 'top': 0, 'right': 450, 'bottom': 450},
       }
   ]
   mock_ui = mock.Mock()
   mock_ui._device.log_path = '/tmp'
-  mock_ui.listWindows.return_value = windows
+  mock_ui._device.serial = '123456'
+  mock_ui._adb.serial = '123456'
+  mock_ui._adb.getprop.return_value = ''
+  mock_ui.getWindows.return_value = windows
   device = uidevice.UiDevice(mock_ui)
 
-  assert device.list_windows() == windows
-  mock_ui.listWindows.assert_called_once_with()
+  assert device.get_windows() == windows
+  mock_ui.getWindows.assert_called_once_with()
