@@ -22,6 +22,7 @@ import com.google.android.mobly.snippet.uiautomator.Info.PointInfo;
 import com.google.android.mobly.snippet.uiautomator.Info.RectInfo;
 import com.google.android.mobly.snippet.uiautomator.Info.UiDeviceInfo;
 import com.google.android.mobly.snippet.uiautomator.Info.UiObject2Info;
+import com.google.android.mobly.snippet.uiautomator.Info.WindowInfo;
 import com.google.android.mobly.snippet.uiautomator.selector.Selector;
 import java.lang.reflect.Type;
 import org.json.JSONException;
@@ -83,6 +84,17 @@ public class Converter implements SnippetObjectConverter {
       obj.put("selected", uiObjectInfo.selected());
       obj.put("visibleBounds", serialize(uiObjectInfo.visibleBounds()));
       obj.put("visibleCenter", serialize(uiObjectInfo.visibleCenter()));
+      return obj;
+    } else if (object instanceof WindowInfo) {
+      WindowInfo windowInfo = (WindowInfo) object;
+      obj.put("id", windowInfo.id());
+      obj.put("displayId", windowInfo.displayId());
+      obj.put("type", windowInfo.type());
+      obj.put("layer", windowInfo.layer());
+      obj.put("title", windowInfo.title());
+      obj.put("active", windowInfo.active());
+      obj.put("focused", windowInfo.focused());
+      obj.put("bounds", serialize(windowInfo.bounds()));
       return obj;
     }
     return null;

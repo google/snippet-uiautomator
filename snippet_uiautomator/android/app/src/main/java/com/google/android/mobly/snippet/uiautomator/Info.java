@@ -18,7 +18,10 @@ package com.google.android.mobly.snippet.uiautomator;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Build.VERSION;
+import android.view.Display;
+import android.view.accessibility.AccessibilityWindowInfo;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import com.google.auto.value.AutoValue;
@@ -78,6 +81,23 @@ public final class Info {
 
   public static RectInfo getRectInfo(Rect rect) {
     return RectInfo.create(rect.top, rect.bottom, rect.left, rect.right);
+  }
+
+  public static WindowInfo getWindowInfo(AccessibilityWindowInfo window) {
+    Rect bounds = new Rect();
+    window.getBoundsInScreen(bounds);
+    CharSequence title = window.getTitle();
+    return WindowInfo.create(
+        /* id= */ window.getId(),
+        /* displayId= */ VERSION.SDK_INT >= Build.VERSION_CODES.R
+            ? window.getDisplayId()
+            : Display.DEFAULT_DISPLAY,
+        /* type= */ window.getType(),
+        /* layer= */ window.getLayer(),
+        /* title= */ title == null ? "" : title.toString(),
+        /* active= */ window.isActive(),
+        /* focused= */ window.isFocused(),
+        /* bounds= */ getRectInfo(bounds));
   }
 
   private static String getString(UiObject2 uiObject2, Function<UiObject2, String> function) {
@@ -297,5 +317,46 @@ public final class Info {
 
     /** Returns a point in the center of the visible bounds of this object. */
     abstract PointInfo visibleCenter();
+  }
+
+  /** Corresponds to the properties of android.view.accessibility.AccessibilityWindowInfo. */
+  @AutoValue
+  public abstract static class WindowInfo {
+    public static WindowInfo create(
+        int id,
+        int displayId,
+        int type,
+        int layer,
+        String title,
+        boolean active,
+        boolean focused,
+        RectInfo bounds) {
+      return new AutoValue_Info_WindowInfo(
+          id, displayId, type, layer, title, active, focused, bounds);
+    }
+
+    /** Returns the unique ID of this window. */
+    abstract int id();
+
+    /** Returns the ID of the display containing this window. */
+    abstract int displayId();
+
+    /** Returns the type of this window, one of the AccessibilityWindowInfo.TYPE_* values. */
+    abstract int type();
+
+    /** Returns the Z-order layer of this window; higher layers are on top. */
+    abstract int layer();
+
+    /** Returns the title of this window, or an empty string if it has none. */
+    abstract String title();
+
+    /** Returns whether this window is active. */
+    abstract boolean active();
+
+    /** Returns whether this window has input focus. */
+    abstract boolean focused();
+
+    /** Returns the bounds of this window in screen coordinates. */
+    abstract RectInfo bounds();
   }
 }

@@ -331,6 +331,15 @@ class UiDevice:
     """Clears the accessibility cache, applicable to sdk 34 or higher."""
     return self._ui.clearCache()
 
+  def get_windows(self) -> Sequence[constants.WindowInfo]:
+    """Returns the accessibility windows currently on screen.
+
+    Returns:
+      One entry per window, in the order UiAutomation.getWindows() returns
+      them. See constants.WindowInfo for the fields.
+    """
+    return self._ui.getWindows()
+
   def click(self, x: int, y: int) -> bool:
     """Performs a click at arbitrary coordinates specified by the user.
 
