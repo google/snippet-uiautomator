@@ -15,6 +15,38 @@ Clear the accessibility cache for SDK 34 (Android 14) or above.
 True
 ```
 
+### Get Windows
+
+List the accessibility windows currently on screen, as returned by
+[UiAutomation#getWindows()](https://developer.android.com/reference/android/app/UiAutomation#getWindows()).
+Each window's `type` is one of the
+[AccessibilityWindowInfo](https://developer.android.com/reference/android/view/accessibility/AccessibilityWindowInfo)
+`TYPE_*` values.
+
+```python
+>>> ad.ui.get_windows()
+[{'id': 42,
+  'displayId': 0,
+  'type': 1,
+  'layer': 1,
+  'title': 'Settings',
+  'active': True,
+  'focused': True,
+  'bounds': {'left': 0, 'top': 0, 'right': 720, 'bottom': 1184}},
+ {'id': 7,
+  'displayId': 0,
+  'type': 3,
+  'layer': 2,
+  'title': 'Status bar',
+  'active': False,
+  'focused': False,
+  'bounds': {'left': 0, 'top': 0, 'right': 720, 'bottom': 48}}]
+
+# For example, check whether a window with a given title is on screen.
+>>> any(w['title'] == 'Settings' for w in ad.ui.get_windows())
+True
+```
+
 ## Device Information
 
 ```python
