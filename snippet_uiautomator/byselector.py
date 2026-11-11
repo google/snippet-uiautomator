@@ -19,6 +19,7 @@ https://developer.android.com/reference/androidx/test/uiautomator/BySelector
 
 from __future__ import annotations
 
+import copy
 from typing import Any, Dict, Mapping, Union, cast
 
 _Mapping = Mapping[str, Union[bool, int, str]]
@@ -54,7 +55,7 @@ class BySelector:
 
   def __init__(self, **kwargs: Any) -> None:
     """Converts the keyword arguments to selector type."""
-    self._selector = dict(kwargs)
+    self._selector = copy.deepcopy(kwargs)
     self._bottom = self._selector
 
   def _find_bottom_selector(self, d: Dict[str, Any]) -> Dict[str, Any]:
@@ -87,7 +88,7 @@ class BySelector:
 
   def copy(self) -> BySelector:
     """Returns a copy of this selector."""
-    selector = BySelector(**self._selector)
+    selector = BySelector(**copy.deepcopy(self._selector))
     selector._bottom = self._find_bottom_selector(
         selector._selector  # pyrefly: ignore[bad-argument-type]
     )
